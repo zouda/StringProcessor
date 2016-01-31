@@ -5,5 +5,5 @@ package com;
  */
 
 public class Regex {
-	String Type;
+    String Type;
 }

@@ -5,22 +5,22 @@ import com.expression.*;
 
 
 public class SubstrExpressionSets {
-	public ArrayList<Expression> ExpressionList;
-	public Sample sample;
-	public int LeftIndex, RightIndex;
+    public ArrayList<Expression> ExpressionList;
+    public Sample sample;
+    public int LeftIndex, RightIndex;
 	
-	public SubstrExpressionSets(){
-		ExpressionList = new ArrayList<Expression>();
-	}
+    public SubstrExpressionSets(){
+        ExpressionList = new ArrayList<Expression>();
+    }
 	
-	public SubstrExpressionSets(Sample sample, int LeftIndex, int RightIndex){
-		ExpressionList = new ArrayList<Expression>();
-		this.sample = sample;
-		this.LeftIndex = LeftIndex;
-		this.RightIndex = RightIndex;
-	}
+    public SubstrExpressionSets(Sample sample, int LeftIndex, int RightIndex){
+        ExpressionList = new ArrayList<Expression>();
+        this.sample = sample;
+        this.LeftIndex = LeftIndex;
+        this.RightIndex = RightIndex;
+    }
 	
-	void addExpression(Expression e){
-		ExpressionList.add(e);
-	}
+    void addExpression(Expression e){
+        ExpressionList.add(e);
+    }
 }
