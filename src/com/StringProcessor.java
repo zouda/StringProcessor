@@ -1,6 +1,7 @@
 package com;
 
 import com.expression.*;
+import com.position.*;
 import java.io.*;
 
 public class StringProcessor {
@@ -39,7 +40,7 @@ public class StringProcessor {
         System.out.println(sample.getOutput());
     }
 	
-    //generate trace expressions for one sample.
+    //generate trace expressions for one sample
     public void GenerateStr(Sample sample){
         String s = sample.getOutput();
         for (int i = 0; i < s.length(); i++){
@@ -51,21 +52,38 @@ public class StringProcessor {
         }
     }
 	
-    //generate trace expression for substring of output string. 
+    //generate trace expression for substring of output string
     public SubstrExpressionSets GenerateSubstring(Sample sample, int leftIndex, int rightIndex){
         SubstrExpressionSets ses = new SubstrExpressionSets(sample, leftIndex, rightIndex);
-        
+        String target = sample.getOutput().substring(leftIndex,rightIndex);
+        String source = sample.getInput();
+        while (true){
+            int pos = source.indexOf(target);
+            if (pos == -1) 
+                break;
+            Position p1 = GeneratePosition(sample, pos);
+            Position p2 = GeneratePosition(sample, pos+target.length());
+            if (p1 != null && p2 != null){
+                ExpressionSubstr es = new ExpressionSubstr(sample, p1, p2);
+                ses.addExpression(es);
+            }
+            source = source.substring(pos+1, target.length());
+        }
         return ses;
     }
 	
-    public void GeneratePosition(String s, int pos){
-		
+    public Position GeneratePosition(Sample sample, int pos){
+		return null;
     }
 	
     public void GenerateRegex(){
 		
     }
-	
+    
+    public void GenerateLoop(){
+        
+    }
+    
     public void run(){
         sample = InputSamples();
         OutputResults();

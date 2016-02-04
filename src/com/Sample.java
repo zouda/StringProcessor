@@ -1,13 +1,27 @@
 package com;
 
+import java.util.ArrayList;
+import com.position.*;
+
 /*
- * String sample, including input and output.
+ * Sample
  */
 
 public class Sample {
     public String Input = "";
     public String Output = "";
-	
+    public ArrayList<PositionGroup> PositionGroupList;
+    
+    public Sample(){
+        PositionGroupList = new ArrayList<PositionGroup>();
+    }
+    
+    public Sample(String input, String output){
+        PositionGroupList = new ArrayList<PositionGroup>();
+        this.Input = input;
+        this.Output = output;
+    }
+    
     public void setInput(String s){
         this.Input = s;
     }
@@ -22,5 +36,21 @@ public class Sample {
 	
     public String getOutput(){
         return this.Output;
+    }
+    
+    //generate position groups for input string
+    public void generatePositionGroups(){
+        for (int i = 0; i < Input.length(); i++){
+            
+        }
+    }
+    
+    //generate position for input string at pos index
+    public void generatePositionAt(int pos){
+        
+    }
+    
+    public PositionGroup getPositionGroupAt(int pos){
+        return PositionGroupList.get(pos);
     }
 }
