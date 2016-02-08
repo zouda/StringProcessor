@@ -8,16 +8,54 @@ public class Tool {
         return false;
     }
     
+    public static boolean isNumber(String s){
+        for (int i = 0; i < s.length(); i++){
+            if (!isNumber(s.charAt(i)))
+                return false;
+        }
+        return true;
+    }
+    
     public static boolean isLowercaseAlphabet(char c){
         if ('a' <= c && c <= 'z')
             return true;
         return false;
     }
     
+    public static boolean isLowercaseAlphabet(String s){
+        for (int i = 0; i < s.length(); i++){
+            if (!isLowercaseAlphabet(s.charAt(i)))
+                return false;
+        }
+        return true;
+    }
+    
     public static boolean isUppercaseAlphabet(char c){
         if ('A' <= c && c <= 'Z')
             return true;
         return false;
+    }
+    
+    public static boolean isUppercaseAlphabet(String s){
+        for (int i = 0; i < s.length(); i++){
+            if (!isUppercaseAlphabet(s.charAt(i)))
+                return false;
+        }
+        return true;
+    }
+    
+    public static boolean isAlphabet(char c){
+        if ('A' <= c && c <= 'Z' || 'a' <= c && c <= 'z')
+            return true;
+        return false;
+    }
+    
+    public static boolean isAlphabet(String s){
+        for (int i = 0; i < s.length(); i++){
+            if (!isAlphabet(s.charAt(i)))
+                return false;
+        }
+        return true;
     }
     
     public static boolean isSameKindToken(char c1, char c2){
