@@ -18,7 +18,7 @@ public class RegexGroup {
         RegexList.add(new Regex(Tok.VoidTok));
     }
     
-    public int getRegexNumber(){
+    public int getSize(){
         return RegexList.size();
     }
     

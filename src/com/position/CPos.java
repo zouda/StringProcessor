@@ -1,7 +1,11 @@
 package com.position;
 
 public class CPos extends Position {
-    public int pos;
+    private int pos;
+    
+    public CPos(){
+        
+    }
     
     public CPos(int pos){
         this.pos = pos;

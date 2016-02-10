@@ -1,18 +1,17 @@
 package com;
 
 import java.util.ArrayList;
-
 import com.position.*;
 import com.regex.*;
 import com.Token.*;
+
 /*
  * Sample
  */
-
 public class Sample {
-    public String Input = "";
-    public String Output = "";
-    public ArrayList<PositionGroup> PositionGroupList;
+    private String Input = "";
+    private String Output = "";
+    private ArrayList<PositionGroup> PositionGroupList;
     
     public Sample(){
         PositionGroupList = new ArrayList<PositionGroup>();
@@ -39,8 +38,7 @@ public class Sample {
     public String getOutput(){
         return this.Output;
     }
-    
-    //check: the pos is not inside one token 
+     
     private boolean isTokenInterruptable(int pos){
         if ((pos == 0) || (pos == Input.length()))
             return true;
@@ -61,27 +59,100 @@ public class Sample {
     private PositionGroup generatePositionGroupAt(int pos){
         PositionGroup pg = new PositionGroup();
         pg.AddPosition(new CPos(pos));
-        pg.AddPosition(new CPos(-(Input.length()-pos)));
+        pg.AddPosition(new CPos(-(Input.length()-pos+1)));
         
         if (isTokenInterruptable(pos)){
             RegexGroup rg1 = ParseLeft(pos);
             RegexGroup rg2 = ParseRight(pos);
-            for (int i = 0; i < rg1.getRegexNumber(); i++)
-                for (int j = 0; j < rg2.getRegexNumber(); j++){
-                    //for every r1 in rg1, every r2 in rg2,set r = (r1,r2), check if r is the c match of input.
-                    //add Pos(r1,r2,c) to pg.
+            for (int i = 0; i < rg1.getSize(); i++)
+                for (int j = 0; j < rg2.getSize(); j++){
+                    Regex r1 = rg1.getRegexAt(i);
+                    Regex r2 = rg2.getRegexAt(j);
+                    if (r1.isVoid() && r2.isVoid())
+                        continue;
+                    Regex r12;
+                    if (r1.isVoid()){
+                        r12 = r1.clone();
+                    }else if (r2.isVoid()){
+                        r12 = r2.clone();
+                    }else {
+                        r12 = r1.clone();
+                        r12.addRegex(r2);
+                    }
+                    RegexOccurrence occur = getOccurrenceNumber(r12, pos);
+                    int occur_num = occur.occur_num;
+                    int appear = occur.appear;
+                    pg.AddPosition(new Pos(r1, r2, appear));
+                    pg.AddPosition(new Pos(r1, r2, appear-occur_num-1));
                 }
         }
         return pg;
     }
     
+    public class RegexOccurrence{
+        public int occur_num;
+        public int appear;
+        
+        public RegexOccurrence(int o, int a){
+            occur_num = o;
+            appear = a;
+        }
+    }
+    
+    private RegexOccurrence getOccurrenceNumber(Regex r, int r_pos){
+        if (r.getTokenAt(0) == Tok.StartTok)
+            return (new RegexOccurrence(1,1));
+        if (r.getTokenAt(r.getSize()) == Tok.EndTok)
+            return (new RegexOccurrence(1,1));
+        int count = 0;
+        for (int start_pos = 0; start_pos < Input.length(); start_pos++){
+            int start = start_pos;
+            int index = 0;
+            while (true){
+                boolean success = true;
+                int i;
+                for (i = start+1; i < Input.length(); i++){
+                    Regex temp = MatchStringWithToken(Input, start, i);
+                    if (temp != null){
+                        if (temp.getTokenAt(0) == r.getTokenAt(index)){
+                            index++;
+                            start = i;
+                        } 
+                        else{
+                            success = false;
+                        }
+                        break;
+                    }
+                }
+                if (success == false)
+                    break;
+                if (index == r.getSize()){
+                    count++;
+                    break;
+                }
+                if (i == Input.length()){
+                    break;
+                }
+            }
+        }
+        if (count == 0){
+            Tool.error("error: Wrong Occurance! (function: getOccurrenceNumber)");
+        }
+        return (new RegexOccurrence(count,1));
+    }
+    
     private RegexGroup ParseLeft(int pos){
         RegexGroup rg = new RegexGroup();
         for (int i = pos-1; i >= 0; i--){
-            Regex r = MatchRegexWithToken(Input, i, pos);
-            //TODO: MatchRegexWithTokenseq
-            if (r != null)
+            Regex r = MatchStringWithTokenSeq(Input, i, pos);
+            if (r != null){
                 rg.addRegex(r);
+                if (i == 0){
+                    Regex temp = r.clone();
+                    temp.setToken(0, Tok.StartTok);
+                    rg.addRegex(temp);
+                }
+            }
         }
         rg.addVoidRegex();
         return rg;
@@ -90,15 +161,43 @@ public class Sample {
     private RegexGroup ParseRight(int pos){
         RegexGroup rg = new RegexGroup();
         for (int i = pos+1; i <= Input.length(); i++){
-            Regex r = MatchRegexWithToken(Input, pos, i);
-            if (r != null)
+            Regex r = MatchStringWithTokenSeq(Input, pos, i);
+            if (r != null){
                 rg.addRegex(r);
+                if (i == Input.length()){
+                    Regex temp = r.clone();
+                    temp.setToken(temp.getSize()-1, Tok.EndTok);
+                    rg.addRegex(temp);
+                }
+            }
         }
         rg.addVoidRegex();
         return rg;
     }
     
-    private Regex MatchRegexWithToken(String s, int Lindex, int Rindex){
+    private Regex MatchStringWithTokenSeq(String s, int Lindex, int Rindex){
+        Regex result = new Regex();
+        int start = Lindex;
+        while (true){
+            boolean match = false;
+            for (int i = start+1; i <= Rindex; i++){
+                Regex r = MatchStringWithToken(s, start, i);
+                if (r != null){
+                    result.addRegex(r);
+                    start = i;
+                    match = true;
+                    break;
+                }
+            }
+            if (!match)
+                return null;
+            if (start == Rindex)
+                break;
+        }
+        return result;
+    }
+    
+    private Regex MatchStringWithToken(String s, int Lindex, int Rindex){
         Regex r = new Regex();
         String ss = s.substring(Lindex,Rindex);
         Tok tok = Token.getTokenType(ss);
@@ -144,7 +243,7 @@ public class Sample {
                     return null;
             }
         }
-        r.setTok(tok);
+        r.addTok(tok);
         return r;
     }
     

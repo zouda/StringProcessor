@@ -70,4 +70,8 @@ public class Tool {
         }
         return false;
     }
+
+    public static void error(String s) {
+        System.out.println(s);
+    }
 }
