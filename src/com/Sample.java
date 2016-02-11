@@ -181,12 +181,12 @@ public class Sample {
         return rg;
     }
     
-    private Regex MatchStringWithTokenSeq(String s, int Lindex, int Rindex){
+    private Regex MatchStringWithTokenSeq(String s, int L, int R){
         Regex result = new Regex();
-        int start = Lindex;
+        int start = L;
         while (true){
             boolean match = false;
-            for (int i = start+1; i <= Rindex; i++){
+            for (int i = start+1; i <= R; i++){
                 Regex r = MatchStringWithToken(s, start, i);
                 if (r != null){
                     result.addRegex(r);
@@ -197,61 +197,61 @@ public class Sample {
             }
             if (!match)
                 return null;
-            if (start == Rindex)
+            if (start == R)
                 break;
         }
-        result.setRange(Lindex, Rindex);
+        result.setRange(L, R);
         return result;
     }
     
-    private Regex MatchStringWithToken(String s, int Lindex, int Rindex){
+    private Regex MatchStringWithToken(String s, int L, int R){
         Regex r = new Regex();
-        String ss = s.substring(Lindex,Rindex);
+        String ss = s.substring(L,R);
         Tok tok = Token.getTokenType(ss);
         if (tok == null)
             return null;
         if (tok == Tok.NumTok){
-            if (Lindex != 0){
-                if (Tool.isNumber(s.charAt(Lindex-1)))
+            if (L != 0){
+                if (Tool.isNumber(s.charAt(L-1)))
                     return null;
             }
-            if (Rindex != s.length()){
-                if (Tool.isNumber(s.charAt(Rindex)))
+            if (R != s.length()){
+                if (Tool.isNumber(s.charAt(R)))
                     return null;
             }
         }
         if (tok == Tok.UpperTok){
-            if (Lindex != 0){
-                if (Tool.isUppercaseAlphabet(s.charAt(Lindex-1)))
+            if (L != 0){
+                if (Tool.isUppercaseAlphabet(s.charAt(L-1)))
                     return null;
             }
-            if (Rindex != s.length()){
-                if (Tool.isUppercaseAlphabet(s.charAt(Rindex)))
+            if (R != s.length()){
+                if (Tool.isUppercaseAlphabet(s.charAt(R)))
                     return null;
             }
         }
         if (tok == Tok.LowerTok){
-            if (Lindex != 0){
-                if (Tool.isLowercaseAlphabet(s.charAt(Lindex-1)))
+            if (L != 0){
+                if (Tool.isLowercaseAlphabet(s.charAt(L-1)))
                     return null;
             }
-            if (Rindex != s.length()){
-                if (Tool.isLowercaseAlphabet(s.charAt(Rindex)))
+            if (R != s.length()){
+                if (Tool.isLowercaseAlphabet(s.charAt(R)))
                     return null;
             }
         }
         if (tok == Tok.AlphaTok){
-            if (Lindex != 0){
-                if (Tool.isAlphabet(s.charAt(Lindex-1)))
+            if (L != 0){
+                if (Tool.isAlphabet(s.charAt(L-1)))
                     return null;
             }
-            if (Rindex != s.length()){
-                if (Tool.isAlphabet(s.charAt(Rindex)))
+            if (R != s.length()){
+                if (Tool.isAlphabet(s.charAt(R)))
                     return null;
             }
         }
         r.addTok(tok);
-        r.setRange(Lindex, Rindex);
+        r.setRange(L, R);
         return r;
     }
     

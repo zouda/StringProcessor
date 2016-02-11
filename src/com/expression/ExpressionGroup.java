@@ -6,17 +6,17 @@ import com.Sample;
 public class ExpressionGroup {
     public ArrayList<Expression> ExpressionList;
     public Sample sample;
-    public int LeftIndex, RightIndex;
+    public int L, R;
 	
     public ExpressionGroup(){
         ExpressionList = new ArrayList<Expression>();
     }
 	
-    public ExpressionGroup(Sample sample, int LeftIndex, int RightIndex){
+    public ExpressionGroup(Sample sample, int L, int R){
         ExpressionList = new ArrayList<Expression>();
         this.sample = sample;
-        this.LeftIndex = LeftIndex;
-        this.RightIndex = RightIndex;
+        this.L = L;
+        this.R = R;
     }
 	
     public void addExpression(Expression e){

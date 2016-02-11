@@ -54,9 +54,9 @@ public class StringProcessor {
     }
 	
     //generate trace expression for substring of output string
-    public ExpressionGroup GenerateSubstring(Sample sample, int leftIndex, int rightIndex){
-        ExpressionGroup eg = new ExpressionGroup(sample, leftIndex, rightIndex);
-        String target = sample.getOutput().substring(leftIndex,rightIndex);
+    public ExpressionGroup GenerateSubstring(Sample sample, int L, int R){
+        ExpressionGroup eg = new ExpressionGroup(sample, L, R);
+        String target = sample.getOutput().substring(L, R);
         String source = sample.getInput();
         while (true){
             int pos = source.indexOf(target);
