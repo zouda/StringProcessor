@@ -9,6 +9,7 @@ import com.Token.*;
 
 public class Regex {
     private ArrayList<Tok> TokenSeq;  
+    private int L = 0, R = 0;
     
     public Regex(){
         TokenSeq = new ArrayList<Tok>();
@@ -19,12 +20,27 @@ public class Regex {
         TokenSeq.add(tok);
     }
     
+    public void setRange(int l, int r){
+        L = l;
+        R = r;
+    }
+    
+    public int getL(){
+        return L;
+    }
+    
+    public int getR(){
+        return R;
+    }
+    
     public void addTok(Tok tok){
         TokenSeq.add(tok);
     }
     
     public void addRegex(Regex r){
         TokenSeq.addAll(r.TokenSeq);
+        if (r.R != 0)
+            this.R = r.R;
     }
     
     public int getSize(){
@@ -37,9 +53,11 @@ public class Regex {
     
     public Regex clone(){
         Regex c = new Regex();
-        for (int i = 0; i < TokenSeq.size(); i++){
-            c.addTok(TokenSeq.get(i));
+        for (int i = 0; i < this.TokenSeq.size(); i++){
+            c.addTok(this.TokenSeq.get(i));
         }
+        c.L = this.L;
+        c.R = this.R;
         return c;
     }
     

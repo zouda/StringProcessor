@@ -105,6 +105,7 @@ public class Sample {
         if (r.getTokenAt(r.getSize()) == Tok.EndTok)
             return (new RegexOccurrence(1,1));
         int count = 0;
+        int appear = 0;
         for (int start_pos = 0; start_pos < Input.length(); start_pos++){
             int start = start_pos;
             int index = 0;
@@ -128,6 +129,8 @@ public class Sample {
                     break;
                 if (index == r.getSize()){
                     count++;
+                    if (start_pos == r.getL() && i == r.getR())
+                        appear = count;
                     break;
                 }
                 if (i == Input.length()){
@@ -136,9 +139,12 @@ public class Sample {
             }
         }
         if (count == 0){
-            Tool.error("error: Wrong Occurance! (function: getOccurrenceNumber)");
+            Tool.error("error: Occurance = 0 (function: getOccurrenceNumber)");
         }
-        return (new RegexOccurrence(count,1));
+        if (appear == 0){
+            Tool.error("error: Appear = 0 (function: getOccurrenceNumber)");
+        }
+        return (new RegexOccurrence(count, appear));
     }
     
     private RegexGroup ParseLeft(int pos){
@@ -194,6 +200,7 @@ public class Sample {
             if (start == Rindex)
                 break;
         }
+        result.setRange(Lindex, Rindex);
         return result;
     }
     
@@ -244,6 +251,7 @@ public class Sample {
             }
         }
         r.addTok(tok);
+        r.setRange(Lindex, Rindex);
         return r;
     }
     

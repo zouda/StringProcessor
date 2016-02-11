@@ -88,5 +88,6 @@ public class StringProcessor {
     public void run(){
         sample = InputSamples();
         OutputResults();
+        //sample.generatePositionGroups();
     }
 }
