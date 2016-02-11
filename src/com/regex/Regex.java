@@ -6,7 +6,6 @@ import com.Token.*;
 /*
  * Regular Expression
  */
-
 public class Regex {
     private ArrayList<Tok> TokenSeq;  
     private int L = 0, R = 0;

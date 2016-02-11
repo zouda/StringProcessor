@@ -1,5 +1,8 @@
 package com.position;
 
+/*
+ * CPos operator
+ */
 public class CPos extends Position {
     private int pos;
     

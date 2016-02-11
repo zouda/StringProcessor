@@ -72,9 +72,9 @@ public class Sample {
                         continue;
                     Regex r12;
                     if (r1.isVoid()){
-                        r12 = r1.clone();
-                    }else if (r2.isVoid()){
                         r12 = r2.clone();
+                    }else if (r2.isVoid()){
+                        r12 = r1.clone();
                     }else {
                         r12 = r1.clone();
                         r12.addRegex(r2);
@@ -102,7 +102,7 @@ public class Sample {
     private RegexOccurrence getOccurrenceNumber(Regex r, int r_pos){
         if (r.getTokenAt(0) == Tok.StartTok)
             return (new RegexOccurrence(1,1));
-        if (r.getTokenAt(r.getSize()) == Tok.EndTok)
+        if (r.getTokenAt(r.getSize()-1) == Tok.EndTok)
             return (new RegexOccurrence(1,1));
         int count = 0;
         int appear = 0;
@@ -112,7 +112,7 @@ public class Sample {
             while (true){
                 boolean success = true;
                 int i;
-                for (i = start+1; i < Input.length(); i++){
+                for (i = start+1; i <= Input.length(); i++){
                     Regex temp = MatchStringWithToken(Input, start, i);
                     if (temp != null){
                         if (temp.getTokenAt(0) == r.getTokenAt(index)){
@@ -133,16 +133,18 @@ public class Sample {
                         appear = count;
                     break;
                 }
-                if (i == Input.length()){
+                if (i > Input.length()){
                     break;
                 }
             }
         }
         if (count == 0){
             Tool.error("error: Occurance = 0 (function: getOccurrenceNumber)");
+            System.out.println(r_pos);
         }
         if (appear == 0){
             Tool.error("error: Appear = 0 (function: getOccurrenceNumber)");
+            System.out.println(r_pos);
         }
         return (new RegexOccurrence(count, appear));
     }

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import com.Sample;
 
 /*
- * Group of Expression at (L, R) of Input String
+ * Group of expressions at Input(L, R)
  */
 public class ExpressionGroup {
     public ArrayList<Expression> ExpressionList;
