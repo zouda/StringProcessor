@@ -3,6 +3,9 @@ package com.expression;
 import java.util.ArrayList;
 import com.Sample;
 
+/*
+ * Group of Expression at (L, R) of Input String
+ */
 public class ExpressionGroup {
     public ArrayList<Expression> ExpressionList;
     public Sample sample;

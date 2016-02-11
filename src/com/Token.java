@@ -1,5 +1,8 @@
 package com;
 
+/*
+ * Token
+ */
 public class Token {
     
     public enum Tok{

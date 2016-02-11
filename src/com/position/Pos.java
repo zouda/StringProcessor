@@ -2,6 +2,9 @@ package com.position;
 
 import com.regex.*;
 
+/*
+ * Pos operator
+ */
 public class Pos extends Position {
     private Regex r1, r2;
     private int c;

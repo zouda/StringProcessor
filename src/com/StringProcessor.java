@@ -5,6 +5,9 @@ import com.position.*;
 
 import java.io.*;
 
+/*
+ * Main process
+ */
 public class StringProcessor {
     public Sample sample;
 	

@@ -3,6 +3,9 @@ package com.regex;
 import java.util.ArrayList;
 import com.Token.Tok;
 
+/*
+ * Group of regular expression
+ */
 public class RegexGroup {
     public ArrayList<Regex> RegexList;
     

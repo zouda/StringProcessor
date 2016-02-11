@@ -1,5 +1,8 @@
 package com;
 
+/*
+ * Tool methods
+ */
 public class Tool {
     
     public static boolean isNumber(char c){

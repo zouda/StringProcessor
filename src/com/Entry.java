@@ -8,7 +8,7 @@
 package com;
 
 /*
- *  Entry of whole project.
+ *  Entry of project
  */
 public class Entry {
 
