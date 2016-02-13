@@ -1,6 +1,7 @@
 package com.expression;
 
 import com.Sample;
+import com.Tool;
 import com.position.Position;
 
 
@@ -15,5 +16,13 @@ public class ExpressionSubstr extends Expression{
         this.p1 = p1;
         this.p2 = p2;
         this.sample = s;
+    }
+    
+    public void Print(){
+        Tool.print("SubStr(v1, ");
+        p1.Print();
+        Tool.print(",");
+        p2.Print();
+        Tool.print(")\n");
     }
 }

@@ -7,9 +7,7 @@ import com.Sample;
  * Group of expressions at Input(L, R)
  */
 public class ExpressionGroup {
-    public ArrayList<Expression> ExpressionList;
-    public Sample sample;
-    public int L, R;
+    private ArrayList<Expression> ExpressionList;
 	
     public ExpressionGroup(){
         ExpressionList = new ArrayList<Expression>();
@@ -17,12 +15,23 @@ public class ExpressionGroup {
 	
     public ExpressionGroup(Sample sample, int L, int R){
         ExpressionList = new ArrayList<Expression>();
-        this.sample = sample;
-        this.L = L;
-        this.R = R;
     }
 	
     public void addExpression(Expression e){
         ExpressionList.add(e);
+    }
+    
+    public Expression getExpressionAt(int pos){
+        return ExpressionList.get(pos);
+    }
+    
+    public int getSize(){
+        return ExpressionList.size();
+    }
+    
+    public void Print(){
+        for (int i = 0; i < ExpressionList.size(); i++){
+            ExpressionList.get(i).Print();
+        }
     }
 }

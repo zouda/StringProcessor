@@ -38,7 +38,11 @@ public class Sample {
     public String getOutput(){
         return this.Output;
     }
-     
+    
+    public PositionGroup getPositionGroupAt(int pos){
+        return PositionGroupList.get(pos);
+    }
+    
     private boolean isTokenInterruptable(int pos){
         if ((pos == 0) || (pos == Input.length()))
             return true;
@@ -255,9 +259,5 @@ public class Sample {
         r.addTok(tok);
         r.setRange(L, R);
         return r;
-    }
-    
-    public PositionGroup getPositionGroupAt(int pos){
-        return PositionGroupList.get(pos);
     }
 }

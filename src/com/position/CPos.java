@@ -1,5 +1,7 @@
 package com.position;
 
+import com.Tool;
+
 /*
  * CPos operator
  */
@@ -16,5 +18,12 @@ public class CPos extends Position {
     
     public int getPos(){
         return pos;
+    }
+    
+    @Override
+    public void Print(){
+        Tool.print("CPos(");
+        Tool.print(pos);
+        Tool.print(")\n");
     }
 }

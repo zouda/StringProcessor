@@ -77,4 +77,12 @@ public class Tool {
     public static void error(String s) {
         System.out.println(s);
     }
+    
+    public static void print(String s){
+        System.out.print(s);
+    }
+
+    public static void print(int num) {
+        System.out.print(num);
+    }
 }

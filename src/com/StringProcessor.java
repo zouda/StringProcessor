@@ -52,11 +52,14 @@ public class StringProcessor {
                 ExpressionGroup eg = GenerateSubstring(sample, i, j);
                 ExpressionConststr ec = new ExpressionConststr(s.substring(i, j));
                 eg.addExpression(ec);
+                if (i == 0 && j == 2){
+                    eg.Print();
+                }
             }
         }
     }
 	
-    //generate trace expression for substring of output string
+    //generate expression group for substring of output string
     public ExpressionGroup GenerateSubstring(Sample sample, int L, int R){
         ExpressionGroup eg = new ExpressionGroup(sample, L, R);
         String target = sample.getOutput().substring(L, R);
@@ -65,26 +68,32 @@ public class StringProcessor {
             int pos = source.indexOf(target);
             if (pos == -1) 
                 break;
-            Position p1 = GeneratePosition(sample, pos);
-            Position p2 = GeneratePosition(sample, pos+target.length());
-            if (p1 != null && p2 != null){
-                ExpressionSubstr es = new ExpressionSubstr(sample, p1, p2);
-                eg.addExpression(es);
+            PositionGroup pg1 = getPositionGroup(sample, pos);
+            PositionGroup pg2 = getPositionGroup(sample, pos+target.length());
+            for (int i = 0; i < pg1.getSize(); i++){
+                for (int j = 0; j < pg2.getSize(); j++){
+                    Position p1 = pg1.getPositionAt(i);
+                    Position p2 = pg2.getPositionAt(j);
+                    if (p1 != null && p2 != null){
+                        ExpressionSubstr es = new ExpressionSubstr(sample, p1, p2);
+                        eg.addExpression(es);
+                    }
+                }
             }
             source = source.substring(pos+1, target.length());
         }
         return eg;
     }
 	
-    public Position GeneratePosition(Sample sample, int pos){
-		return null;
-    }
-	
-    public void GenerateRegex(){
-		
+    public PositionGroup getPositionGroup(Sample sample, int pos){
+		return sample.getPositionGroupAt(pos);
     }
     
     public void GenerateLoop(){
+        
+    }
+    
+    public void Display(){
         
     }
     
@@ -92,5 +101,7 @@ public class StringProcessor {
         sample = InputSamples();
         OutputResults();
         sample.generatePositionGroups();
+        GenerateStr(sample);
+        //Display();
     }
 }
