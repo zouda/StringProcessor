@@ -29,6 +29,6 @@ public class ExpressionConststr extends Expression {
         }
         Tool.print("ConstrStr(\"");
         Tool.print(ConstStr);
-        Tool.print("\")\n");
+        Tool.print("\")");
     }
 }

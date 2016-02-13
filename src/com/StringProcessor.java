@@ -48,11 +48,11 @@ public class StringProcessor {
     public void GenerateStr(Sample sample){
         String s = sample.getOutput();
         for (int i = 0; i < s.length(); i++){
-            for (int j = i; j < s.length(); j++){
+            for (int j = i + 1; j <= s.length(); j++){
                 ExpressionGroup eg = GenerateSubstring(sample, i, j);
                 ExpressionConststr ec = new ExpressionConststr(s.substring(i, j));
                 eg.addExpression(ec);
-                if (i == 0 && j == 2){
+                if (i == 0 && j == 3){
                     eg.Print();
                 }
             }
@@ -80,7 +80,7 @@ public class StringProcessor {
                     }
                 }
             }
-            source = source.substring(pos+1, target.length());
+            source = source.substring(pos+1, source.length());
         }
         return eg;
     }

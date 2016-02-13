@@ -24,6 +24,6 @@ public class CPos extends Position {
     public void Print(){
         Tool.print("CPos(");
         Tool.print(pos);
-        Tool.print(")\n");
+        Tool.print(")");
     }
 }

@@ -23,6 +23,6 @@ public class ExpressionSubstr extends Expression{
         p1.Print();
         Tool.print(",");
         p2.Print();
-        Tool.print(")\n");
+        Tool.print(")");
     }
 }

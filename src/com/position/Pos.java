@@ -31,6 +31,6 @@ public class Pos extends Position {
         r2.Print();
         Tool.print(",");
         Tool.print(c);
-        Tool.print(")\n");
+        Tool.print(")");
     }
 }

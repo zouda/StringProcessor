@@ -63,7 +63,7 @@ public class Sample {
     private PositionGroup generatePositionGroupAt(int pos){
         PositionGroup pg = new PositionGroup();
         pg.AddPosition(new CPos(pos));
-        pg.AddPosition(new CPos(-(Input.length()-pos+1)));
+        pg.AddPosition(new CPos(-(Input.length()-pos)));
         
         if (isTokenInterruptable(pos)){
             RegexGroup rg1 = ParseLeft(pos);

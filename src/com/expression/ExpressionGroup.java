@@ -1,7 +1,9 @@
 package com.expression;
 
 import java.util.ArrayList;
+
 import com.Sample;
+import com.Tool;
 
 /*
  * Group of expressions at Input(L, R)
@@ -32,6 +34,7 @@ public class ExpressionGroup {
     public void Print(){
         for (int i = 0; i < ExpressionList.size(); i++){
             ExpressionList.get(i).Print();
+            Tool.print("\n");
         }
     }
 }
