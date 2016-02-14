@@ -48,7 +48,7 @@ public class Sample {
             return true;
         if (Tool.isSameKindToken(Input.charAt(pos-1), Input.charAt(pos)))
             return false;
-        return false;
+        return true;
     }
     
     //generate position groups for input string

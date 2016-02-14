@@ -98,10 +98,12 @@ public class StringProcessor {
     }
     
     public void run(){
+        Tool.startFileWriting();
         sample = InputSamples();
         OutputResults();
         sample.generatePositionGroups();
         GenerateStr(sample);
         //Display();
+        Tool.endFileWriting();
     }
 }

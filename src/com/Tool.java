@@ -1,9 +1,12 @@
 package com;
 
+import java.io.*;
+
 /*
  * Tool methods
  */
 public class Tool {
+    public static BufferedWriter bw;
     
     public static boolean isNumber(char c){
         if ('0' <= c && c <= '9')
@@ -80,9 +83,37 @@ public class Tool {
     
     public static void print(String s){
         System.out.print(s);
+        try {
+            bw.write(s);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void print(int num) {
         System.out.print(num);
+        try {
+            bw.write(String.valueOf(num));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public static void startFileWriting(){
+        try {
+            FileWriter fw = new FileWriter(new File(Global.OUTPUT_FILE_PATH),false);
+            fw.close();
+            bw = new BufferedWriter(new FileWriter(new File(Global.OUTPUT_FILE_PATH),true));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public static void endFileWriting(){
+        try {
+            bw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
