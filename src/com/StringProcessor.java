@@ -1,18 +1,26 @@
 package com;
 
+import com.dag.*;
 import com.expression.*;
 import com.position.*;
 
 import java.io.*;
+import java.util.ArrayList;
 
 /*
  * Main process
  */
 public class StringProcessor {
-    public Sample sample;
+	public ArrayList<Sample> SampleList;
+	public ArrayList<DAG> DAGList;
+	public DAGGroup T;
 	
-    public Sample InputSamples(){
-        Sample result = new Sample();
+	public StringProcessor(){
+	    SampleList = new ArrayList<Sample>();
+	    DAGList = new ArrayList<DAG>();
+	}
+	
+    public void InputSamples(){
         FileInputStream fis = null;
         InputStreamReader isr = null;
         BufferedReader br = null; 
@@ -20,8 +28,17 @@ public class StringProcessor {
             fis = new FileInputStream(Global.INPUT_FILE_PATH);
             isr = new InputStreamReader(fis);
             br = new BufferedReader(isr);
-            result.setInput(br.readLine());
-            result.setOutput(br.readLine());
+            while (true){
+                String input = br.readLine();
+                String output = br.readLine();
+                if (input == null || output == null){
+                    break;
+                }
+                Sample sample = new Sample();
+                sample.setInput(input);
+                sample.setOutput(output);
+                SampleList.add(sample);
+            }
         } catch (FileNotFoundException e) {
             System.out.println("Error: File Not Exist");
         } catch (IOException e) {
@@ -36,27 +53,28 @@ public class StringProcessor {
                 e.printStackTrace();
             }
         }
-        return result;
     }
 	
-    public void OutputResults(){
-        System.out.println(sample.getInput());
-        System.out.println(sample.getOutput());
+    public void DisplayInputContent(){
+        for (int i = 0; i < SampleList.size();i++){
+            Sample sample = SampleList.get(i);
+            Tool.println(sample.getInput());
+            Tool.println(sample.getOutput());
+        }
     }
 	
     //generate trace expressions for one sample
-    public void GenerateStr(Sample sample){
+    public DAG GenerateDAG(Sample sample){
+        DAG dag = new DAG();
         String s = sample.getOutput();
         for (int i = 0; i < s.length(); i++){
             for (int j = i + 1; j <= s.length(); j++){
                 ExpressionGroup eg = GenerateSubstring(sample, i, j);
                 ExpressionConststr ec = new ExpressionConststr(s.substring(i, j));
                 eg.addExpression(ec);
-                if (i == 0 && j == 3){
-                    eg.Print();
-                }
             }
         }
+        return dag;
     }
 	
     //generate expression group for substring of output string
@@ -93,17 +111,44 @@ public class StringProcessor {
         
     }
     
-    public void Display(){
+    public void PreProcess(){
+        Tool.startFileWriting();
+        InputSamples();
+        DisplayInputContent();
+    }
+    
+    public void GenerateTraceExpressionsForEachSample(){
+        for (int i = 0; i < SampleList.size(); i++){
+            Sample sample = SampleList.get(i);
+            sample.generatePositionGroups();
+            DAG dag = GenerateDAG(sample);
+            DAGList.add(dag);
+            sample.setDAG(dag);
+        }
+    }
+    
+    public void GeneratePartition(){
+        while (T.ExistCompPair()){
+            DAGPair dp = T.FindLargestCSPair();
+            T.DeleteDAGPair(dp);
+            DAG newDAG = DAGGroup.IntersectDAG(dp);
+            T.addDAG(newDAG);
+        }
+    }
+    
+    public void GenerateBoolClassifier(){
         
     }
     
-    public void run(){
-        Tool.startFileWriting();
-        sample = InputSamples();
-        OutputResults();
-        sample.generatePositionGroups();
-        GenerateStr(sample);
-        //Display();
+    public void EndProcess(){
         Tool.endFileWriting();
+    }
+    
+    public void Run(){
+        PreProcess();
+        GenerateTraceExpressionsForEachSample();
+        GeneratePartition();
+        GenerateBoolClassifier();
+        EndProcess();
     }
 }

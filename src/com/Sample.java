@@ -1,6 +1,8 @@
 package com;
 
 import java.util.ArrayList;
+
+import com.dag.DAG;
 import com.position.*;
 import com.regex.*;
 import com.Token.*;
@@ -12,6 +14,7 @@ public class Sample {
     private String Input = "";
     private String Output = "";
     private ArrayList<PositionGroup> PositionGroupList;
+    private DAG Dag;
     
     public Sample(){
         PositionGroupList = new ArrayList<PositionGroup>();
@@ -164,6 +167,7 @@ public class Sample {
                     temp.setToken(0, Tok.StartTok);
                     rg.addRegex(temp);
                 }
+                break;
             }
         }
         rg.addVoidRegex();
@@ -181,6 +185,7 @@ public class Sample {
                     temp.setToken(temp.getSize()-1, Tok.EndTok);
                     rg.addRegex(temp);
                 }
+                break;
             }
         }
         rg.addVoidRegex();
@@ -259,5 +264,9 @@ public class Sample {
         r.addTok(tok);
         r.setRange(L, R);
         return r;
+    }
+    
+    public void setDAG(DAG dag){
+        this.Dag = dag;
     }
 }

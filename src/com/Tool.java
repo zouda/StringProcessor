@@ -89,6 +89,10 @@ public class Tool {
             e.printStackTrace();
         }
     }
+    
+    public static void println(String s){
+        System.out.println(s);
+    }
 
     public static void print(int num) {
         System.out.print(num);
