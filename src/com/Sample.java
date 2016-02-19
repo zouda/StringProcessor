@@ -42,6 +42,14 @@ public class Sample {
         return this.Output;
     }
     
+    public void setDAG(DAG dag){
+        this.Dag = dag;
+    }
+    
+    public DAG getDAG(){
+        return this.Dag;
+    }
+    
     public PositionGroup getPositionGroupAt(int pos){
         return PositionGroupList.get(pos);
     }
@@ -264,9 +272,5 @@ public class Sample {
         r.addTok(tok);
         r.setRange(L, R);
         return r;
-    }
-    
-    public void setDAG(DAG dag){
-        this.Dag = dag;
     }
 }

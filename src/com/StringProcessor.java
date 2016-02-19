@@ -3,7 +3,6 @@ package com;
 import com.dag.*;
 import com.expression.*;
 import com.position.*;
-
 import java.io.*;
 import java.util.ArrayList;
 
@@ -12,12 +11,10 @@ import java.util.ArrayList;
  */
 public class StringProcessor {
 	public ArrayList<Sample> SampleList;
-	public ArrayList<DAG> DAGList;
 	public DAGGroup T;
 	
 	public StringProcessor(){
 	    SampleList = new ArrayList<Sample>();
-	    DAGList = new ArrayList<DAG>();
 	}
 	
     public void InputSamples(){
@@ -63,21 +60,31 @@ public class StringProcessor {
         }
     }
 	
-    //generate trace expressions for one sample
     public DAG GenerateDAG(Sample sample){
         DAG dag = new DAG();
         String s = sample.getOutput();
+        for (int i = 0; i <= s.length(); i++){
+            Node n = new Node(i);
+            dag.addNode(n);
+        }
+        dag.setStartNode(dag.getNodeAt(0));
+        dag.setEndNode(dag.getNodeAt(s.length()));
         for (int i = 0; i < s.length(); i++){
             for (int j = i + 1; j <= s.length(); j++){
                 ExpressionGroup eg = GenerateSubstring(sample, i, j);
                 ExpressionConststr ec = new ExpressionConststr(s.substring(i, j));
                 eg.addExpression(ec);
+                
+                Edge e = new Edge();
+                e.setEdge(dag.getNodeAt(i), dag.getNodeAt(j));
+                e.setExpressionGroup(eg);
+                dag.addEdge(e);
             }
         }
+        sample.setDAG(dag);
         return dag;
     }
 	
-    //generate expression group for substring of output string
     public ExpressionGroup GenerateSubstring(Sample sample, int L, int R){
         ExpressionGroup eg = new ExpressionGroup(sample, L, R);
         String target = sample.getOutput().substring(L, R);
@@ -122,16 +129,18 @@ public class StringProcessor {
             Sample sample = SampleList.get(i);
             sample.generatePositionGroups();
             DAG dag = GenerateDAG(sample);
-            DAGList.add(dag);
-            sample.setDAG(dag);
+            T.addDAG(dag);
         }
     }
     
     public void GeneratePartition(){
         while (T.ExistCompPair()){
             DAGPair dp = T.FindLargestCSPair();
-            T.DeleteDAGPair(dp);
-            DAG newDAG = DAGGroup.IntersectDAG(dp);
+            DAG d1 = T.getDAGAt(dp.getIndex1());
+            DAG d2 = T.getDAGAt(dp.getIndex2());
+            DAG newDAG = Tool.IntersectDAG(d1, d2);
+            T.removeDAGAt(dp.getIndex1());
+            T.removeDAGAt(dp.getIndex2());
             T.addDAG(newDAG);
         }
     }
