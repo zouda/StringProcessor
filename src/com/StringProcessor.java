@@ -74,7 +74,9 @@ public class StringProcessor {
                 ExpressionGroup eg = GenerateSubstring(sample, i, j);
                 ExpressionConststr ec = new ExpressionConststr(s.substring(i, j));
                 eg.addExpression(ec);
-                
+                if (i == 4 && j == 7){
+                    eg.Print();
+                }
                 Edge e = new Edge();
                 e.setEdge(dag.getNodeAt(i), dag.getNodeAt(j));
                 e.setExpressionGroup(eg);
@@ -119,6 +121,7 @@ public class StringProcessor {
     }
     
     public void PreProcess(){
+        T = new DAGGroup();
         Tool.startFileWriting();
         InputSamples();
         DisplayInputContent();
@@ -156,8 +159,8 @@ public class StringProcessor {
     public void Run(){
         PreProcess();
         GenerateTraceExpressionsForEachSample();
-        GeneratePartition();
-        GenerateBoolClassifier();
+        //GeneratePartition();
+        //GenerateBoolClassifier();
         EndProcess();
     }
 }

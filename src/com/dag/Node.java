@@ -15,6 +15,7 @@ public class Node {
     }
     
     public Node(int num){
+        label = new int[Global.MAX_LABEL_NUMBER];
         label[0] = num;
         dim = 1;
     }

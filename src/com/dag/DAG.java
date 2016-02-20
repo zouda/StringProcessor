@@ -1,9 +1,8 @@
 package com.dag;
 
 import java.util.ArrayList;
-import com.expression.ExpressionConststr;
-import com.expression.ExpressionGroup;
-import com.expression.ExpressionSubstr;
+
+import com.expression.*;
 import com.position.CPos;
 import com.position.Pos;
 import com.position.PositionGroup;
@@ -20,6 +19,11 @@ public class DAG {
     private Node EndNode;
     private int size = 0;
     private boolean sizePreComputed = false;
+    
+    public DAG(){
+        NodeList = new ArrayList<Node>();
+        EdgeList = new ArrayList<Edge>();
+    }
     
     public Node getEndNode() {
         return EndNode;
@@ -102,9 +106,20 @@ public class DAG {
     }
     
     private int Size(ExpressionGroup eg){
-        return 1;
+        int size = 0;
+        for (int i = 0; i < eg.getSize(); i++){
+            size += Size(eg.getExpressionAt(i));
+        }
+        return size;
     }
     
+    private int Size(Expression e) {
+        if (e instanceof ExpressionSubstr)
+            return Size((ExpressionSubstr)e);
+        else
+            return Size((ExpressionConststr)e);
+    }
+
     private int Size(ExpressionSubstr es){
         return 1;
     }

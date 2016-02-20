@@ -7,6 +7,10 @@ import com.Tool;
 public class DAGGroup {
     private ArrayList<DAG> DAGList;
     
+    public DAGGroup(){
+        DAGList = new ArrayList<DAG>();
+    }
+    
     public boolean ExistCompPair(){
         for (int i = 0; i < DAGList.size()-1; i++){
             for (int j = i+1; j < DAGList.size(); j++){
