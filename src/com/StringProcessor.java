@@ -74,9 +74,7 @@ public class StringProcessor {
                 ExpressionGroup eg = GenerateSubstring(sample, i, j);
                 ExpressionConststr ec = new ExpressionConststr(s.substring(i, j));
                 eg.addExpression(ec);
-                if (i == 4 && j == 7){
-                    eg.Print();
-                }
+
                 Edge e = new Edge();
                 e.setEdge(dag.getNodeAt(i), dag.getNodeAt(j));
                 e.setExpressionGroup(eg);
@@ -97,16 +95,18 @@ public class StringProcessor {
                 break;
             PositionGroup pg1 = getPositionGroup(sample, pos);
             PositionGroup pg2 = getPositionGroup(sample, pos+target.length());
-            for (int i = 0; i < pg1.getSize(); i++){
-                for (int j = 0; j < pg2.getSize(); j++){
-                    Position p1 = pg1.getPositionAt(i);
-                    Position p2 = pg2.getPositionAt(j);
-                    if (p1 != null && p2 != null){
-                        ExpressionSubstr es = new ExpressionSubstr(sample, p1, p2);
-                        eg.addExpression(es);
-                    }
-                }
-            }
+//            for (int i = 0; i < pg1.getSize(); i++){
+//                for (int j = 0; j < pg2.getSize(); j++){
+//                    Position p1 = pg1.getPositionAt(i);
+//                    Position p2 = pg2.getPositionAt(j);
+//                    if (p1 != null && p2 != null){
+//                        ExpressionSubstr es = new ExpressionSubstr(sample, p1, p2);
+//                        eg.addExpression(es);
+//                    }
+//                }
+//            }
+            ExpressionSubstr es = new ExpressionSubstr(sample, pg1, pg2);
+            eg.addExpression(es);
             source = source.substring(pos+1, source.length());
         }
         return eg;

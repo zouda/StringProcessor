@@ -1,13 +1,9 @@
 package com.dag;
 
 import java.util.ArrayList;
-
 import com.expression.*;
-import com.position.CPos;
-import com.position.Pos;
-import com.position.PositionGroup;
-import com.regex.Regex;
-import com.regex.RegexGroup;
+import com.position.*;
+import com.regex.*;
 
 /*
  * DAG structure: record trace expression information
@@ -121,7 +117,9 @@ public class DAG {
     }
 
     private int Size(ExpressionSubstr es){
-        return 1;
+        PositionGroup pg1 = es.getPositionGroup1();
+        PositionGroup pg2 = es.getPositionGroup2();
+        return Size(pg1)*Size(pg2);
     }
     
     private int Size(ExpressionConststr ec){
@@ -129,22 +127,6 @@ public class DAG {
     }
     
     private int Size(PositionGroup pg){
-        return 1;
-    }
-    
-    private int Size(CPos p){
-        return 1;
-    }
-    
-    private int Size(Pos p){
-        return 1;
-    }
-    
-    private int Size(RegexGroup rg){
-        return 1;
-    }
-    
-    private int Size(Regex r){
-        return 1;
+        return pg.getSize();
     }
 }

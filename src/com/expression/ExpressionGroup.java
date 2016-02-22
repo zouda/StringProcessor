@@ -31,10 +31,10 @@ public class ExpressionGroup {
         return ExpressionList.size();
     }
     
-    public void Print(){
-        for (int i = 0; i < ExpressionList.size(); i++){
-            ExpressionList.get(i).Print();
-            Tool.print("\n");
-        }
-    }
+//    public void Print(){
+//        for (int i = 0; i < ExpressionList.size(); i++){
+//            ExpressionList.get(i).Print();
+//            Tool.print("\n");
+//        }
+//    }
 }

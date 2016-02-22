@@ -20,10 +20,10 @@ public class CPos extends Position {
         return pos;
     }
     
-    @Override
-    public void Print(){
-        Tool.print("CPos(");
-        Tool.print(pos);
-        Tool.print(")");
-    }
+//    @Override
+//    public void Print(){
+//        Tool.print("CPos(");
+//        Tool.print(pos);
+//        Tool.print(")");
+//    }
 }

@@ -175,7 +175,7 @@ public class Sample {
                     temp.setToken(0, Tok.StartTok);
                     rg.addRegex(temp);
                 }
-                break;
+                //break;
             }
         }
         rg.addVoidRegex();
@@ -193,7 +193,7 @@ public class Sample {
                     temp.setToken(temp.getSize()-1, Tok.EndTok);
                     rg.addRegex(temp);
                 }
-                break;
+                //break;
             }
         }
         rg.addVoidRegex();

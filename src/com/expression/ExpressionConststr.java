@@ -21,14 +21,14 @@ public class ExpressionConststr extends Expression {
         return ConstStr;
     }
     
-    @Override
-    public void Print(){
-        if (ConstStr == null){
-            Tool.error("error: undefined ConstStr");
-            return;
-        }
-        Tool.print("ConstrStr(\"");
-        Tool.print(ConstStr);
-        Tool.print("\")");
-    }
+//    @Override
+//    public void Print(){
+//        if (ConstStr == null){
+//            Tool.error("error: undefined ConstStr");
+//            return;
+//        }
+//        Tool.print("ConstrStr(\"");
+//        Tool.print(ConstStr);
+//        Tool.print("\")");
+//    }
 }
