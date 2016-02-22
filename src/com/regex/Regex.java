@@ -1,8 +1,6 @@
 package com.regex;
 
 import java.util.ArrayList;
-
-import com.Tool;
 import com.Token.*;
 
 /*
@@ -70,6 +68,16 @@ public class Regex {
     
     public void setToken(int pos, Tok tok){
         TokenSeq.set(pos, tok);
+    }
+    
+    public boolean equals(Regex r){
+        if (r.getSize() != this.TokenSeq.size())
+            return false;
+        for (int i = 0; i <r.getSize(); i++){
+            if (r.getTokenAt(i) != this.TokenSeq.get(i))
+                return false;
+        }
+        return true;
     }
     
 //    public void Print(){

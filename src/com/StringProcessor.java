@@ -105,7 +105,7 @@ public class StringProcessor {
 //                    }
 //                }
 //            }
-            ExpressionSubstr es = new ExpressionSubstr(sample, pg1, pg2);
+            ExpressionSubstr es = new ExpressionSubstr(pg1, pg2);
             eg.addExpression(es);
             source = source.substring(pos+1, source.length());
         }
@@ -141,7 +141,7 @@ public class StringProcessor {
             DAGPair dp = T.FindLargestCSPair();
             DAG d1 = T.getDAGAt(dp.getIndex1());
             DAG d2 = T.getDAGAt(dp.getIndex2());
-            DAG newDAG = Tool.IntersectDAG(d1, d2);
+            DAG newDAG = DAG.IntersectDAG(d1, d2);
             T.removeDAGAt(dp.getIndex1());
             T.removeDAGAt(dp.getIndex2());
             T.addDAG(newDAG);

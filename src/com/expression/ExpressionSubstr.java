@@ -10,12 +10,10 @@ import com.position.PositionGroup;
  */
 public class ExpressionSubstr extends Expression{
     public PositionGroup pg1, pg2;
-    public Sample sample;
     
-    public ExpressionSubstr(Sample s, PositionGroup pg1, PositionGroup pg2){
+    public ExpressionSubstr(PositionGroup pg1, PositionGroup pg2){
         this.pg1 = pg1;
         this.pg2 = pg2;
-        this.sample = s;
     }
 
     public PositionGroup getPositionGroup1() {

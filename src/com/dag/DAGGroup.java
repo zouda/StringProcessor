@@ -14,7 +14,7 @@ public class DAGGroup {
     public boolean ExistCompPair(){
         for (int i = 0; i < DAGList.size()-1; i++){
             for (int j = i+1; j < DAGList.size(); j++){
-                if (Tool.Comp(DAGList.get(i), DAGList.get(j)))
+                if (DAG.Comp(DAGList.get(i), DAGList.get(j)))
                     return true;
             }
         }
@@ -27,13 +27,13 @@ public class DAGGroup {
         DAG d2 = DAGList.get(j);
         for (int k = 0; k < DAGList.size(); k++){
             if (k != i && k != j){
-                boolean c1 = Tool.Comp(DAGList.get(k), d1);
-                boolean c2 = Tool.Comp(DAGList.get(k), d2);
+                boolean c1 = DAG.Comp(DAGList.get(k), d1);
+                boolean c2 = DAG.Comp(DAGList.get(k), d2);
                 if (c1 != c2){
                     continue;
                 }
-                DAG d = Tool.IntersectDAG(d1, d2);
-                boolean c3 = Tool.Comp(DAGList.get(k), d);
+                DAG d = DAG.IntersectDAG(d1, d2);
+                boolean c3 = DAG.Comp(DAGList.get(k), d);
                 if (c1 != c3){
                     continue;
                 }
@@ -46,8 +46,8 @@ public class DAGGroup {
     private double CS2(int i, int j){
         DAG d1 = DAGList.get(i);
         DAG d2 = DAGList.get(j);
-        DAG d = Tool.IntersectDAG(d1, d2);
-        int size = Tool.Math(d1.getSize(), d2.getSize());
+        DAG d = DAG.IntersectDAG(d1, d2);
+        int size = Tool.Max(d1.getSize(), d2.getSize());
         double score = (double)d.getSize() / (double)size;
         return score;
     }
@@ -58,7 +58,7 @@ public class DAGGroup {
         double maxCS2 = -1;
         for (int i = 0; i < DAGList.size()-1; i++){
             for (int j = i+1; j < DAGList.size(); j++){
-                if (Tool.Comp(DAGList.get(i), DAGList.get(j))){
+                if (DAG.Comp(DAGList.get(i), DAGList.get(j))){
                     int cs1 = CS1(i, j);
                     double cs2 = CS2(i, j);
                     if ((cs1 > maxCS1) || (cs1 == maxCS1 && cs2 > maxCS2)){

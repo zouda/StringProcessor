@@ -10,6 +10,14 @@ public class Edge {
     private Node sNode;
     private Node tNode;
     
+    public Edge(){
+    }
+    
+    public Edge(Node s, Node t){
+        sNode = s;
+        tNode = t;
+    }
+    
     public void setExpressionGroup(ExpressionGroup eg) {
         this.eg = eg;
     }

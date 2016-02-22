@@ -20,6 +20,17 @@ public class Node {
         dim = 1;
     }
     
+    public Node(Node n1, Node n2){
+        label = new int[n1.dim+n2.dim];
+        for (int i = 0; i < n1.dim; i++){
+            label[i] = n1.label[i];
+        }
+        for (int i = n1.dim; i < n1.dim+n2.dim; i++){
+            label[i] = n2.label[i-n1.dim];
+        }
+        dim = n1.dim+n2.dim; 
+    }
+    
     public void setDim(int dim){
         this.dim = dim;
     }

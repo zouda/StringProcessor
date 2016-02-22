@@ -1,6 +1,5 @@
 package com.position;
 
-import com.Tool;
 import com.regex.*;
 
 /*
@@ -19,6 +18,19 @@ public class Pos extends Position {
         this.r2 = r2;
         this.c = c;
     }
+    
+    public Regex getRegex1(){
+        return this.r1;
+    }
+    
+    public Regex getRegex2(){
+        return this.r2;
+    }
+    
+    public int getC(){
+        return this.c;
+    }
+    
     
 //    public void Print(){
 //        if (r1 == null || r2 == null){

@@ -1,7 +1,5 @@
 package com.position;
 
-import com.Tool;
-
 /*
  * CPos operator
  */

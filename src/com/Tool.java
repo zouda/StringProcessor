@@ -1,13 +1,19 @@
 package com;
 
 import java.io.*;
-import com.dag.*;
 
 /*
  * Tool methods
  */
 public class Tool {
     public static BufferedWriter bw;
+    
+    public static int Max(int x, int y){
+        if (x > y)
+            return x;
+        else
+            return y;
+    }
     
     public static boolean isNumber(char c){
         if ('0' <= c && c <= '9')
@@ -120,24 +126,5 @@ public class Tool {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-    
-    public static boolean Comp(DAG d1, DAG d2){
-        DAG d = IntersectDAG(d1, d2);
-        if (d.isVoid())
-            return false;
-        else
-            return true;
-    }
-    
-    public static DAG IntersectDAG(DAG d1, DAG d2) {
-        return null;
-    }
-    
-    public static int Math(int x, int y){
-        if (x > y)
-            return x;
-        else
-            return y;
     }
 }
