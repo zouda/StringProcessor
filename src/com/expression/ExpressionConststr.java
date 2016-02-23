@@ -1,6 +1,5 @@
 package com.expression;
 
-import com.Tool;
 
 /*
  * ConstStr Expression 

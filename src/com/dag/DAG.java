@@ -2,6 +2,7 @@ package com.dag;
 
 import java.util.ArrayList;
 
+import com.Global;
 import com.expression.*;
 import com.position.*;
 
@@ -15,10 +16,25 @@ public class DAG {
     private Node EndNode;
     private int size = 0;
     private boolean sizePreComputed = false;
+    private int dim = 0;
+    private int[] dimSize;
     
     public DAG(){
+        dimSize = new int[Global.MAX_LABEL_NUMBER];
         NodeList = new ArrayList<Node>();
         EdgeList = new ArrayList<Edge>();
+    }
+    
+    public int getDim(){
+        return this.dim;
+    }
+    
+    public void setDim(int dim){
+        this.dim = dim;
+    }
+    
+    public void setOneDimSize(int dimsize) {
+        dimSize[0] = dimsize;
     }
     
     public Node getEndNode() {
@@ -59,10 +75,6 @@ public class DAG {
     
     public void addNode(Node n){
         this.NodeList.add(n);
-    }
-    
-    public boolean isVoid(){
-        return false;
     }
 
     public Node getNodeAt(int pos){
@@ -132,7 +144,7 @@ public class DAG {
     
     public static boolean Comp(DAG d1, DAG d2){
         DAG d = IntersectDAG(d1, d2);
-        if (d.isVoid())
+        if (d.isCovered())
             return false;
         else
             return true;
@@ -140,6 +152,13 @@ public class DAG {
     
     public static DAG IntersectDAG(DAG d1, DAG d2) {
         DAG d = new DAG();
+        d.setDim(d1.getDim()+d2.getDim());
+        for (int i = 0; i < d1.dim; i++){
+            d.dimSize[i] = d1.dimSize[i];
+        }
+        for (int i = 0; i < d2.dim; i++){
+            d.dimSize[i+d1.dim] = d2.dimSize[i];
+        }
         for (int i = 0; i < d1.getNodeNumber(); i++){
             for (int j = 0; j < d2.getNodeNumber(); j++){
                 Node n = new Node(d1.getNodeAt(i), d2.getNodeAt(j));
@@ -152,23 +171,47 @@ public class DAG {
                 }
             }
         }
-        for (int i = 0; i < d1.getEdgeNumber(); i++){
-            for (int j = 0; j < d2.getEdgeNumber(); j++){
-                Edge e1 = d1.getEdgeAt(i);
-                Edge e2 = d2.getEdgeAt(j);
-                Node ns1 = e1.getSource();
-                Node nt1 = e1.getTarget();
-                Node ns2 = e2.getSource();
-                Node nt2 = e2.getTarget();
-                Edge e = new Edge(new Node(ns1, nt1), new Node(ns2, nt2));
-                ExpressionGroup eg = Intersect(e1.getExpressionGroup(), e2.getExpressionGroup());
-                e.setExpressionGroup(eg);
-                d.addEdge(e);
+        for (int i = 0; i < d1.getNodeNumber(); i++){
+            for (int j = 0; j < d2.getNodeNumber(); j++){
+                Node u = d.getNodeByNode(new Node(d1.getNodeAt(i), d2.getNodeAt(j)));
+                for (int k = 0; k < d1.getNodeAt(i).getPathSize(); k++){
+                    for (int l = 0; l < d2.getNodeAt(j).getPathSize(); l++){
+                        Edge e1 = d1.getNodeAt(i).getPathAt(k);
+                        Edge e2 = d2.getNodeAt(j).getPathAt(l);
+                        Node t1 = e1.getTarget();
+                        Node t2 = e2.getTarget();
+                        Node v = d.getNodeByNode(new Node(t1, t2));
+                        Edge e = new Edge(u,v);
+                        ExpressionGroup eg = Intersect(e1.getExpressionGroup(), e2.getExpressionGroup());
+                        e.setExpressionGroup(eg);
+                        d.addEdge(e);
+                    }
+                }
             }
         }
         return d;
     }
     
+    private Node getNodeByNode(Node node) {
+        int[] label = node.getLabel();
+        int dim = node.getDim();
+        int index = label[0];
+        for (int i = 1; i < dim; i++){
+            index += index * this.dimSize[i-1] + label[i];
+        }
+        return this.getNodeAt(index);
+    }
+    
+    private int getNodeIndexByNode(Node node) {
+        int[] label = node.getLabel();
+        int dim = node.getDim();
+        int index = label[0];
+        for (int i = 1; i < dim; i++){
+            index += index * this.dimSize[i-1] + label[i];
+        }
+        return index;
+    }
+
     private static ExpressionGroup Intersect(ExpressionGroup eg1, ExpressionGroup eg2){
         ExpressionGroup eg = new ExpressionGroup();
         for (int i = 0; i < eg1.getSize(); i++){
@@ -245,11 +288,35 @@ public class DAG {
     
     private static Pos Intersect(Pos p1, Pos p2) {
         if (p1.getRegex1().equals(p2.getRegex1()) 
-                && p1.getRegex2().equals(p2.getRegex2()) 
-                && (p1.getC() == p2.getC())){
+            && p1.getRegex2().equals(p2.getRegex2()) 
+            && (p1.getC() == p2.getC())){
             return p1;
         } else {
             return null;
         }
-    }    
+    }
+    
+    //if a path from StartNode to EndNode found(Flood Flow)
+    public boolean isCovered(){
+        boolean[] flag = new boolean[this.NodeList.size()];
+        int[] queue = new int[this.NodeList.size()];
+        int top = -1, bot = 0;
+        flag[0] = true;
+        queue[0] = 0;
+        while (true){
+            top++;
+            Node u = this.NodeList.get(queue[top]);
+            for (int i = 0; i < u.getPathSize(); i++){
+                Edge e = u.getPathAt(i);
+                Node v = e.getTarget();
+                int index = this.getNodeIndexByNode(v);
+                if (!flag[index]){
+                    flag[index] = true;
+                    queue[bot++] = index;
+                }
+            }
+            if (top == bot) break;
+        }
+        return flag[this.NodeList.size()-1];
+    }
 }

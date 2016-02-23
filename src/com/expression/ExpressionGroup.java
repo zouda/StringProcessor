@@ -1,9 +1,7 @@
 package com.expression;
 
 import java.util.ArrayList;
-
 import com.Sample;
-import com.Tool;
 
 /*
  * Group of expressions at Input(L, R)

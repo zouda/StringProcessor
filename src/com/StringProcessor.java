@@ -67,6 +67,8 @@ public class StringProcessor {
             Node n = new Node(i);
             dag.addNode(n);
         }
+        dag.setDim(1);
+        dag.setOneDimSize(s.length());
         dag.setStartNode(dag.getNodeAt(0));
         dag.setEndNode(dag.getNodeAt(s.length()));
         for (int i = 0; i < s.length(); i++){
@@ -79,6 +81,7 @@ public class StringProcessor {
                 e.setEdge(dag.getNodeAt(i), dag.getNodeAt(j));
                 e.setExpressionGroup(eg);
                 dag.addEdge(e);
+                dag.getNodeAt(i).addPath(e);
             }
         }
         sample.setDAG(dag);
