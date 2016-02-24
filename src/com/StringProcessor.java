@@ -1,8 +1,10 @@
 package com;
 
+import com.bool.Bool;
 import com.dag.*;
 import com.expression.*;
 import com.position.*;
+
 import java.io.*;
 import java.util.ArrayList;
 
@@ -67,6 +69,7 @@ public class StringProcessor {
             Node n = new Node(i);
             dag.addNode(n);
         }
+        dag.setSample(sample);
         dag.setDim(1);
         dag.setOneDimSize(s.length());
         dag.setStartNode(dag.getNodeAt(0));
@@ -123,6 +126,31 @@ public class StringProcessor {
         
     }
     
+    private Bool GenerateBoolExpression(int index) {
+        Bool b = new Bool();
+        SampleSet s1 = new SampleSet();
+        SampleSet s2 = new SampleSet();
+        s1.addSampleSet(T.getDAGAt(index).getSampleList());
+        for (int i = 0; i < T.getDAGNumber(); i++){
+            if (i != index){
+                s2.addSampleSet(T.getDAGAt(i).getSampleList());
+            }
+        }
+        while (!s1.isEmpty()){
+            SampleSet old_s1 = s1.Clone(); 
+            while (!s2.isEmpty()){
+                SampleSet old_s2 = s2.Clone();
+                // for all matches, get largest CSP one
+                // update s1, s2
+                if (old_s2.getSize() == s2.getSize())
+                    return null;
+            }
+            if (old_s1.getSize() == s1.getSize())
+                return null;
+        }
+        return b;
+    }
+    
     public void PreProcess(){
         T = new DAGGroup();
         Tool.startFileWriting();
@@ -152,7 +180,10 @@ public class StringProcessor {
     }
     
     public void GenerateBoolClassifier(){
-        
+        for (int i = 0; i < T.getDAGNumber(); i++){
+            Bool b = GenerateBoolExpression(i);
+            T.addBoolClassifier(b);
+        }
     }
     
     public void EndProcess(){
@@ -162,7 +193,7 @@ public class StringProcessor {
     public void Run(){
         PreProcess();
         GenerateTraceExpressionsForEachSample();
-        //GeneratePartition();
+        GeneratePartition();
         //GenerateBoolClassifier();
         EndProcess();
     }

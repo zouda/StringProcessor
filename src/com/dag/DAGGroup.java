@@ -3,6 +3,7 @@ package com.dag;
 import java.util.ArrayList;
 
 import com.Tool;
+import com.bool.Bool;
 
 public class DAGGroup {
     private ArrayList<DAG> DAGList;
@@ -89,6 +90,15 @@ public class DAGGroup {
 
     public DAG getDAGAt(int pos) {
         return this.DAGList.get(pos);
+    }
+
+    public int getDAGNumber() {
+        return this.DAGList.size();
+    }
+
+    public void addBoolClassifier(Bool b) {
+        // TODO Auto-generated method stub
+        
     }
 }
 

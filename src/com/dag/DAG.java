@@ -3,6 +3,7 @@ package com.dag;
 import java.util.ArrayList;
 
 import com.Global;
+import com.Sample;
 import com.expression.*;
 import com.position.*;
 
@@ -12,6 +13,7 @@ import com.position.*;
 public class DAG {
     private ArrayList<Node> NodeList;
     private ArrayList<Edge> EdgeList;
+    private ArrayList<Sample> SampleList;
     private Node StartNode;
     private Node EndNode;
     private int size = 0;
@@ -23,6 +25,19 @@ public class DAG {
         dimSize = new int[Global.MAX_LABEL_NUMBER];
         NodeList = new ArrayList<Node>();
         EdgeList = new ArrayList<Edge>();
+        SampleList = new ArrayList<Sample>();
+    }
+    
+    public void setSample(Sample s){
+        SampleList.add(s);
+    }
+    
+    public void addSample(Sample s){
+        SampleList.add(s);
+    }
+    
+    public ArrayList<Sample> getSampleList(){
+        return this.SampleList;
     }
     
     public int getDim(){
@@ -155,9 +170,11 @@ public class DAG {
         d.setDim(d1.getDim()+d2.getDim());
         for (int i = 0; i < d1.dim; i++){
             d.dimSize[i] = d1.dimSize[i];
+            d.addSample(d1.SampleList.get(i));
         }
         for (int i = 0; i < d2.dim; i++){
             d.dimSize[i+d1.dim] = d2.dimSize[i];
+            d.addSample(d2.SampleList.get(i));
         }
         for (int i = 0; i < d1.getNodeNumber(); i++){
             for (int j = 0; j < d2.getNodeNumber(); j++){
