@@ -2,6 +2,8 @@ package com;
 
 import java.util.ArrayList;
 
+import com.bool.Match;
+
 /*
  * Set of Samples
  */
@@ -36,5 +38,15 @@ public class SampleSet {
 
     public int getSize() {
         return this.SampleList.size();
+    }
+
+    public void clearUnMatchedWith(Match m) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public void removeAllSamplesIn(SampleSet s) {
+        // TODO Auto-generated method stub
+        
     }
 }

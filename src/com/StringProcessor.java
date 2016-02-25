@@ -1,9 +1,13 @@
 package com;
 
+import com.Token.Tok;
 import com.bool.Bool;
+import com.bool.Match;
+import com.bool.MatchGroup;
 import com.dag.*;
 import com.expression.*;
 import com.position.*;
+import com.regex.Regex;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -13,11 +17,32 @@ import java.util.ArrayList;
  */
 public class StringProcessor {
 	public ArrayList<Sample> SampleList;
+	public MatchGroup MatchSet;
 	public DAGGroup T;
 	
 	public StringProcessor(){
+        T = new DAGGroup();
 	    SampleList = new ArrayList<Sample>();
+	    MatchSet = new MatchGroup();
 	}
+	
+    public void GenerateAllMatch(){
+        for (int i = 1; i <= 3; i++){
+            MatchSet.addMatch(new Match(new Regex(Tok.AlphaTok), i));
+            MatchSet.addMatch(new Match(new Regex(Tok.ColonTok), i));
+            MatchSet.addMatch(new Match(new Regex(Tok.CommaTok), i));
+            MatchSet.addMatch(new Match(new Regex(Tok.DotTok), i));
+            MatchSet.addMatch(new Match(new Regex(Tok.HyphenTok), i));
+            MatchSet.addMatch(new Match(new Regex(Tok.LowerTok), i));
+            MatchSet.addMatch(new Match(new Regex(Tok.LparenTok), i));
+            MatchSet.addMatch(new Match(new Regex(Tok.NumTok), i));
+            MatchSet.addMatch(new Match(new Regex(Tok.RparenTok), i));
+            MatchSet.addMatch(new Match(new Regex(Tok.SemicolonTok), i));
+            MatchSet.addMatch(new Match(new Regex(Tok.SlashTok), i));
+            MatchSet.addMatch(new Match(new Regex(Tok.SpaceTok), i));
+            MatchSet.addMatch(new Match(new Regex(Tok.UpperTok), i));
+        }
+    }
 	
     public void InputSamples(){
         FileInputStream fis = null;
@@ -138,24 +163,43 @@ public class StringProcessor {
         }
         while (!s1.isEmpty()){
             SampleSet old_s1 = s1.Clone(); 
+            SampleSet s1_ = s1.Clone();
+            MatchGroup d = new MatchGroup();
             while (!s2.isEmpty()){
                 SampleSet old_s2 = s2.Clone();
-                // for all matches, get largest CSP one
-                // update s1, s2
+                int max_score = 0, best = 0;
+                for (int i = 0; i < MatchSet.getSize(); i++){
+                    Match m = MatchSet.getMatchAt(i);
+                    int score = CSP(s1, s2, m);
+                    if (score > max_score){
+                        max_score = score;
+                        best = i;
+                    }
+                }
+                s1_.clearUnMatchedWith(MatchSet.getMatchAt(best));
+                s2.clearUnMatchedWith(MatchSet.getMatchAt(best));
+                d.addMatch(MatchSet.getMatchAt(best));
                 if (old_s2.getSize() == s2.getSize())
                     return null;
             }
+            s1.removeAllSamplesIn(s1_);
+            b.addConjunct(d);
             if (old_s1.getSize() == s1.getSize())
                 return null;
         }
         return b;
     }
-    
+   
+    private int CSP(SampleSet s1, SampleSet s2, Match m) {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
     public void PreProcess(){
-        T = new DAGGroup();
         Tool.startFileWriting();
         InputSamples();
         DisplayInputContent();
+        GenerateAllMatch();
     }
     
     public void GenerateTraceExpressionsForEachSample(){
