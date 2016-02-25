@@ -2,6 +2,7 @@ package com;
 
 import java.util.ArrayList;
 
+import com.bool.Match;
 import com.dag.DAG;
 import com.position.*;
 import com.regex.*;
@@ -272,5 +273,45 @@ public class Sample {
         r.addTok(tok);
         r.setRange(L, R);
         return r;
+    }
+    
+    public boolean isInputMatchedWith(Match m){
+        Regex r = m.getRegex();
+        int count = 0;
+        for (int start_pos = 0; start_pos < Input.length(); start_pos++){
+            int start = start_pos;
+            int index = 0;
+            while (true){
+                boolean success = true;
+                int i;
+                for (i = start+1; i <= Input.length(); i++){
+                    Regex temp = MatchStringWithToken(Input, start, i);
+                    if (temp != null){
+                        if (temp.getTokenAt(0) == r.getTokenAt(index)){
+                            index++;
+                            start = i;
+                        } 
+                        else{
+                            success = false;
+                        }
+                        break;
+                    }
+                }
+                if (success == false)
+                    break;
+                if (index == r.getSize()){
+                    count++;
+                    break;
+                }
+                if (i > Input.length()){
+                    break;
+                }
+            }
+        }
+        if (count != m.getC()){
+            return false;
+        } else{
+            return true;
+        }
     }
 }

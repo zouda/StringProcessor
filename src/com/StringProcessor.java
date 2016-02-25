@@ -191,8 +191,16 @@ public class StringProcessor {
     }
    
     private int CSP(SampleSet s1, SampleSet s2, Match m) {
-        // TODO Auto-generated method stub
-        return 0;
+        int num1 = 0, num2 = 0;
+        for (int i = 0; i < s1.getSize(); i++){
+            if (s1.getSampleAt(i).isInputMatchedWith(m))
+                num1++;
+        }
+        for (int i = 0; i < s2.getSize(); i++){
+            if (s2.getSampleAt(i).isInputMatchedWith(m))
+                num2++;
+        }
+        return num1*num2;
     }
 
     public void PreProcess(){

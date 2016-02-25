@@ -39,14 +39,30 @@ public class SampleSet {
     public int getSize() {
         return this.SampleList.size();
     }
-
-    public void clearUnMatchedWith(Match m) {
-        // TODO Auto-generated method stub
-        
+    
+    public Sample getSampleAt(int pos){
+        return this.SampleList.get(pos);
     }
 
-    public void removeAllSamplesIn(SampleSet s) {
-        // TODO Auto-generated method stub
+    public void clearUnMatchedWith(Match m) {
+        int i = 0;
+        while (true){
+            Sample s = SampleList.get(i);
+            if (s.isInputMatchedWith(m)){
+                i++;
+            } else{
+                SampleList.remove(i);
+            }
+            if (i == SampleList.size())
+                break;
+        }
+    }
+
+    public void removeAllSamplesIn(SampleSet ss) {
+        for (int i = 0; i < ss.getSize(); i++){
+            Sample s = ss.SampleList.get(i);
+            this.SampleList.remove(s);
+        }
         
     }
 }

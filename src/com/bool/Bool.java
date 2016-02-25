@@ -1,6 +1,7 @@
 package com.bool;
 
 import java.util.ArrayList;
+
 public class Bool {
     
     private ArrayList<MatchGroup> MatchGroupList;
