@@ -1,7 +1,6 @@
 package com.dag;
 
 import java.util.ArrayList;
-import com.Global;
 
 /*
  * Node in DAG
@@ -14,12 +13,11 @@ public class Node {
     
     public Node(){
         PathList = new ArrayList<Edge>();
-        label = new int[Global.MAX_LABEL_NUMBER];
     }
     
     public Node(int num){
         PathList = new ArrayList<Edge>();
-        label = new int[Global.MAX_LABEL_NUMBER];
+        label = new int[1];
         label[0] = num;
         dim = 1;
     }

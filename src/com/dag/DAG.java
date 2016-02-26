@@ -160,9 +160,9 @@ public class DAG {
     public static boolean Comp(DAG d1, DAG d2){
         DAG d = IntersectDAG(d1, d2);
         if (d.isCovered())
-            return false;
-        else
             return true;
+        else
+            return false;
     }
     
     public static DAG IntersectDAG(DAG d1, DAG d2) {
@@ -178,7 +178,7 @@ public class DAG {
         }
         for (int i = 0; i < d1.getNodeNumber(); i++){
             for (int j = 0; j < d2.getNodeNumber(); j++){
-                Node n = new Node(d1.getNodeAt(i), d2.getNodeAt(j));
+                Node n = new Node(d1.getNodeAt(i), d2.getNodeAt(j));                
                 d.addNode(n);
                 if (i == 0 && j == 0){
                     d.setStartNode(n);
@@ -198,10 +198,18 @@ public class DAG {
                         Node t1 = e1.getTarget();
                         Node t2 = e2.getTarget();
                         Node v = d.getNodeByNode(new Node(t1, t2));
-                        Edge e = new Edge(u,v);
-                        ExpressionGroup eg = Intersect(e1.getExpressionGroup(), e2.getExpressionGroup());
-                        e.setExpressionGroup(eg);
-                        d.addEdge(e);
+//                        if (u.getLabel()[0] == 0 && u.getLabel()[1] == 0 && 
+//                            v.getLabel()[0] == 3 && v.getLabel()[1] == 3){
+//                            i = i;
+//                        }
+                        
+                        ExpressionGroup eg = Intersect(e1.getExpressionGroup(), e2.getExpressionGroup());                        
+                        if (eg != null){
+                            Edge e = new Edge(u,v);
+                            e.setExpressionGroup(eg);
+                            d.addEdge(e);
+                            u.addPath(e);
+                        }
                     }
                 }
             }
@@ -249,11 +257,9 @@ public class DAG {
                 }
             }
         }
-        if (eg.getSize() == 0){
+        if (eg.getSize() == 0)
             return null;
-        } else{
-            return eg;
-        }
+        return eg;
     }
 
     private static ExpressionConststr Intersect(ExpressionConststr e1, ExpressionConststr e2) {
@@ -293,7 +299,9 @@ public class DAG {
                 }
             }
         }
-        return null;
+        if (pg.getSize() == 0)
+            return null;
+        return pg;
     }
 
     private static CPos Intersect(CPos p1, CPos p2) {
@@ -329,7 +337,7 @@ public class DAG {
                 int index = this.getNodeIndexByNode(v);
                 if (!flag[index]){
                     flag[index] = true;
-                    queue[bot++] = index;
+                    queue[++bot] = index;
                 }
             }
             if (top == bot) break;

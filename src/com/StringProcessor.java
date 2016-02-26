@@ -229,6 +229,7 @@ public class StringProcessor {
             T.removeDAGAt(dp.getIndex2());
             T.addDAG(newDAG);
         }
+        System.out.println(T.getDAGNumber());
     }
     
     public void GenerateBoolClassifier(){

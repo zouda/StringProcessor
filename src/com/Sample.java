@@ -75,7 +75,7 @@ public class Sample {
     private PositionGroup generatePositionGroupAt(int pos){
         PositionGroup pg = new PositionGroup();
         pg.AddPosition(new CPos(pos));
-        pg.AddPosition(new CPos(-(Input.length()-pos)));
+        pg.AddPosition(new CPos(-(Input.length()-pos+1)));
         
         if (isTokenInterruptable(pos)){
             RegexGroup rg1 = ParseLeft(pos);
@@ -176,7 +176,7 @@ public class Sample {
                     temp.setToken(0, Tok.StartTok);
                     rg.addRegex(temp);
                 }
-                //break;
+                break;
             }
         }
         rg.addVoidRegex();
@@ -194,7 +194,7 @@ public class Sample {
                     temp.setToken(temp.getSize()-1, Tok.EndTok);
                     rg.addRegex(temp);
                 }
-                //break;
+                break;
             }
         }
         rg.addVoidRegex();
