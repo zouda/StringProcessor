@@ -79,16 +79,6 @@ public class StringProcessor {
         }
     }
 	
-    public void DisplayInputContent(){
-        for (int i = 0; i < SampleList.size();i++){
-            Sample sample = SampleList.get(i);
-            Tool.print(sample.getInput());
-            Tool.print(" | ");
-            Tool.println(sample.getOutput());
-        }
-        Tool.println("");
-    }
-	
     public DAG GenerateDAG(Sample sample){
         DAG dag = new DAG();
         String s = sample.getOutput();
@@ -199,13 +189,25 @@ public class StringProcessor {
                 num1++;
         }
         for (int i = 0; i < s2.getSize(); i++){
-            if (s2.getSampleAt(i).isInputMatchedWith(m))
+            if (!s2.getSampleAt(i).isInputMatchedWith(m))
                 num2++;
         }
         return num1*num2;
     }
     
+    private void DisplayInputContent(){
+        Tool.println("== Examples ==");
+        for (int i = 0; i < SampleList.size();i++){
+            Sample sample = SampleList.get(i);
+            Tool.print(sample.getInput());
+            Tool.print(" | ");
+            Tool.println(sample.getOutput());
+        }
+        Tool.println("");
+    }
+    
     private void DisplayPartition(){
+        Tool.println("== Partition ==");
         for (int i = 0 ; i < T.getDAGNumber();i++){
             DAG d = T.getDAGAt(i);
             Tool.print("Group #");
@@ -217,9 +219,32 @@ public class StringProcessor {
                 Tool.println(d.getSampleList().get(j).getOutput());
             }
         }
-        Tool.print("Total: ");
-        Tool.print(T.getDAGNumber());
         Tool.println("");
+    }
+    
+    private void DisplayBoolClassifiers(){
+        Tool.println("== Classifier ==");
+        for (int i = 0; i < T.getDAGNumber(); i++){
+            int number = i + 1;
+            Tool.print("Group #"+number+": ");
+            Bool b = T.getBoolAt(i);
+            for (int j = 0; j < b.getConjunctNumber(); j++){
+                if (j > 0){
+                    Tool.print(" & ");
+                }
+                MatchGroup d = b.getConjuctAt(j);
+                for (int k = 0; k < d.getSize(); k++){
+                    if (k > 0){
+                        Tool.print(" | ");
+                    }
+                    Match m = d.getMatchAt(k);
+                    Tool.print("Match(v1,");
+                    m.getRegex().Print();
+                    Tool.print(","+m.getC()+")");
+                }
+            }
+            Tool.println("");
+        }
     }
     
     public void PreProcess(){
@@ -254,8 +279,15 @@ public class StringProcessor {
     public void GenerateBoolClassifier(){
         for (int i = 0; i < T.getDAGNumber(); i++){
             Bool b = GenerateBoolExpression(i);
-            T.addBoolClassifier(b);
+            if (b == null){
+                int number = i+1;
+                Tool.error("Failure in generate bool classifier for Partition Group "+number);
+            }
+            else{
+                T.addBoolClassifier(b);
+            }
         }
+        DisplayBoolClassifiers();
     }
     
     public void EndProcess(){
@@ -266,7 +298,7 @@ public class StringProcessor {
         PreProcess();
         GenerateTraceExpressionsForEachSample();
         GeneratePartition();
-        //GenerateBoolClassifier();
+        GenerateBoolClassifier();
         EndProcess();
     }
 }

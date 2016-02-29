@@ -106,6 +106,12 @@ public class Tool {
     
     public static void println(String s){
         System.out.println(s);
+        try {
+            bw.write(s);
+            bw.write('\n');
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void print(int num) {

@@ -10,6 +10,7 @@ public class Node {
     private int dim;
     private double size = 0;
     private ArrayList<Edge> PathList;
+    public boolean SizeCompleted = false;
     
     public Node(){
         PathList = new ArrayList<Edge>();

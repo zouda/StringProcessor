@@ -50,8 +50,8 @@ public class DAGGroup {
         DAG d1 = DAGList.get(i);
         DAG d2 = DAGList.get(j);
         DAG d = DAG.IntersectDAG(d1, d2);
-        //double size = Tool.Max_Double(d1.getSize(), d2.getSize());
-        double score = d.getSize();// /size
+        double size = Tool.Max_Double(d1.getSize(), d2.getSize());
+        double score = d.getSize()/size;
         return score;
     }
     
@@ -100,6 +100,10 @@ public class DAGGroup {
 
     public void addBoolClassifier(Bool b) {
         this.BoolList.add(b);
+    }
+    
+    public Bool getBoolAt(int pos){
+        return this.BoolList.get(pos);
     }
 }
 

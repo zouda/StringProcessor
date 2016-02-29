@@ -1,6 +1,8 @@
 package com.regex;
 
 import java.util.ArrayList;
+
+import com.Tool;
 import com.Token.*;
 
 /*
@@ -80,21 +82,21 @@ public class Regex {
         return true;
     }
     
-//    public void Print(){
-//        if (TokenSeq.size() == 0){
-//            Tool.error("error: print undefined regex");
-//            return;
-//        }
-//        if (TokenSeq.size() > 1){
-//            Tool.print("TokenSeq(");
-//        }
-//        for (int i = 0; i < TokenSeq.size(); i++){
-//            TokenSeq.get(i).Print();
-//            if (i != TokenSeq.size()-1)
-//                Tool.print(",");
-//        }
-//        if (TokenSeq.size() > 1){
-//            Tool.print(")");
-//        }
-//    }
+    public void Print(){
+        if (TokenSeq.size() == 0){
+            Tool.error("error: print undefined regex");
+            return;
+        }
+        if (TokenSeq.size() > 1){
+            Tool.print("TokenSeq(");
+        }
+        for (int i = 0; i < TokenSeq.size(); i++){
+            TokenSeq.get(i).Print();
+            if (i != TokenSeq.size()-1)
+                Tool.print(",");
+        }
+        if (TokenSeq.size() > 1){
+            Tool.print(")");
+        }
+    }
 }

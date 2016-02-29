@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.Global;
 import com.Sample;
+import com.Tool;
 import com.expression.*;
 import com.position.*;
 
@@ -120,11 +121,17 @@ public class DAG {
     
     private void computeSize(){
         StartNode.setSize(1);
-        for (int i = 0; i < EdgeList.size(); i++){
-            Edge e = EdgeList.get(i);
-            Node s = e.getSource();
-            Node t = e.getTarget();
-            t.setSize(t.getSize() + s.getSize() * Size(e.getExpressionGroup()));
+        for (int i = 0; i < NodeList.size(); i++){
+            Node u = NodeList.get(i);
+            u.SizeCompleted = true;
+            for (int j = 0; j < u.getPathSize(); j++){
+                Edge e = u.getPathAt(j);
+                Node v = e.getTarget();
+                if (v.SizeCompleted){
+                    Tool.error("Error in computeSize");
+                }
+                v.setSize(v.getSize() + u.getSize() * Size(e.getExpressionGroup()));
+            }
         }
         this.size = EndNode.getSize();
     }
