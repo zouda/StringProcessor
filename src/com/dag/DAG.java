@@ -16,7 +16,7 @@ public class DAG {
     private ArrayList<Sample> SampleList;
     private Node StartNode;
     private Node EndNode;
-    private int size = 0;
+    private double size = 0;
     private boolean sizePreComputed = false;
     private int dim = 0;
     private int[] dimSize;
@@ -108,7 +108,7 @@ public class DAG {
         return this.EdgeList.size();
     }
     
-    public int getSize(){
+    public double getSize(){
         if (this.sizePreComputed){
             return this.size;
         }else{
@@ -126,6 +126,7 @@ public class DAG {
             Node t = e.getTarget();
             t.setSize(t.getSize() + s.getSize() * Size(e.getExpressionGroup()));
         }
+        this.size = EndNode.getSize();
     }
     
     private int Size(ExpressionGroup eg){
@@ -321,7 +322,7 @@ public class DAG {
         }
     }
     
-    //if a path from StartNode to EndNode found(Flood Flow)
+    //if a path from StartNode to EndNode found(FloodFill)
     public boolean isCovered(){
         boolean[] flag = new boolean[this.NodeList.size()];
         int[] queue = new int[this.NodeList.size()];

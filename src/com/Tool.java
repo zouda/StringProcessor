@@ -8,7 +8,14 @@ import java.io.*;
 public class Tool {
     public static BufferedWriter bw;
     
-    public static int Max(int x, int y){
+    public static int Max_Int(int x, int y){
+        if (x > y)
+            return x;
+        else
+            return y;
+    }
+    
+    public static double Max_Double(double x, double y) {
         if (x > y)
             return x;
         else

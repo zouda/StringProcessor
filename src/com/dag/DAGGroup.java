@@ -7,9 +7,11 @@ import com.bool.Bool;
 
 public class DAGGroup {
     private ArrayList<DAG> DAGList;
+    private ArrayList<Bool> BoolList;
     
     public DAGGroup(){
         DAGList = new ArrayList<DAG>();
+        BoolList = new ArrayList<Bool>();
     }
     
     public boolean ExistCompPair(){
@@ -48,8 +50,8 @@ public class DAGGroup {
         DAG d1 = DAGList.get(i);
         DAG d2 = DAGList.get(j);
         DAG d = DAG.IntersectDAG(d1, d2);
-        int size = Tool.Max(d1.getSize(), d2.getSize());
-        double score = (double)d.getSize() / (double)size;
+        //double size = Tool.Max_Double(d1.getSize(), d2.getSize());
+        double score = d.getSize();// /size
         return score;
     }
     
@@ -97,8 +99,7 @@ public class DAGGroup {
     }
 
     public void addBoolClassifier(Bool b) {
-        // TODO Auto-generated method stub
-        
+        this.BoolList.add(b);
     }
 }
 

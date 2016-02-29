@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class Node {
     private int[] label; 
     private int dim;
-    private int size = 0;
+    private double size = 0;
     private ArrayList<Edge> PathList;
     
     public Node(){
@@ -58,11 +58,11 @@ public class Node {
         return this.label;
     }
     
-    public void setSize(int size){
+    public void setSize(double size){
         this.size = size;
     }
     
-    public int getSize(){
+    public double getSize(){
         return this.size;
     }
 

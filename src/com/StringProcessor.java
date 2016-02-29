@@ -82,9 +82,11 @@ public class StringProcessor {
     public void DisplayInputContent(){
         for (int i = 0; i < SampleList.size();i++){
             Sample sample = SampleList.get(i);
-            Tool.println(sample.getInput());
+            Tool.print(sample.getInput());
+            Tool.print(" | ");
             Tool.println(sample.getOutput());
         }
+        Tool.println("");
     }
 	
     public DAG GenerateDAG(Sample sample){
@@ -202,7 +204,24 @@ public class StringProcessor {
         }
         return num1*num2;
     }
-
+    
+    private void DisplayPartition(){
+        for (int i = 0 ; i < T.getDAGNumber();i++){
+            DAG d = T.getDAGAt(i);
+            Tool.print("Group #");
+            Tool.print(i+1);
+            Tool.println(":");
+            for (int j = 0; j < d.getDim(); j++){
+                Tool.print(d.getSampleList().get(j).getInput());
+                Tool.print(" | ");
+                Tool.println(d.getSampleList().get(j).getOutput());
+            }
+        }
+        Tool.print("Total: ");
+        Tool.print(T.getDAGNumber());
+        Tool.println("");
+    }
+    
     public void PreProcess(){
         Tool.startFileWriting();
         InputSamples();
@@ -225,11 +244,11 @@ public class StringProcessor {
             DAG d1 = T.getDAGAt(dp.getIndex1());
             DAG d2 = T.getDAGAt(dp.getIndex2());
             DAG newDAG = DAG.IntersectDAG(d1, d2);
-            T.removeDAGAt(dp.getIndex1());
             T.removeDAGAt(dp.getIndex2());
+            T.removeDAGAt(dp.getIndex1());
             T.addDAG(newDAG);
         }
-        System.out.println(T.getDAGNumber());
+        DisplayPartition();
     }
     
     public void GenerateBoolClassifier(){
