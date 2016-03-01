@@ -27,7 +27,7 @@ public class StringProcessor {
 	    MatchSet = new MatchGroup();
 	}
 	
-    public void GenerateAllMatch(){
+    private void GenerateAllMatch(){
         for (int i = 1; i <= 3; i++){
             MatchSet.addMatch(new Match(new Regex(Tok.AlphaTok), i));
             MatchSet.addMatch(new Match(new Regex(Tok.ColonTok), i));
@@ -45,7 +45,7 @@ public class StringProcessor {
         }
     }
 	
-    public void InputSamples(){
+    private void InputSamples(){
         FileInputStream fis = null;
         InputStreamReader isr = null;
         BufferedReader br = null; 
@@ -80,7 +80,7 @@ public class StringProcessor {
         }
     }
 	
-    public DAG GenerateDAG(Sample sample){
+    private DAG GenerateDAG(Sample sample){
         DAG dag = new DAG();
         String s = sample.getOutput();
         for (int i = 0; i <= s.length(); i++){
@@ -109,34 +109,26 @@ public class StringProcessor {
         return dag;
     }
 	
-    public ExpressionGroup GenerateSubstring(Sample sample, int L, int R){
+    private ExpressionGroup GenerateSubstring(Sample sample, int L, int R){
         ExpressionGroup eg = new ExpressionGroup(sample, L, R);
         String target = sample.getOutput().substring(L, R);
         String source = sample.getInput();
+        int offset = 0;
         while (true){
             int pos = source.indexOf(target);
             if (pos == -1) 
                 break;
-            PositionGroup pg1 = getPositionGroup(sample, pos);
-            PositionGroup pg2 = getPositionGroup(sample, pos+target.length());
-//            for (int i = 0; i < pg1.getSize(); i++){
-//                for (int j = 0; j < pg2.getSize(); j++){
-//                    Position p1 = pg1.getPositionAt(i);
-//                    Position p2 = pg2.getPositionAt(j);
-//                    if (p1 != null && p2 != null){
-//                        ExpressionSubstr es = new ExpressionSubstr(sample, p1, p2);
-//                        eg.addExpression(es);
-//                    }
-//                }
-//            }
+            PositionGroup pg1 = getPositionGroup(sample, pos+offset);
+            PositionGroup pg2 = getPositionGroup(sample, pos+offset+target.length());
             ExpressionSubstr es = new ExpressionSubstr(pg1, pg2);
             eg.addExpression(es);
+            offset += (pos + 1);
             source = source.substring(pos+1, source.length());
         }
         return eg;
     }
 	
-    public PositionGroup getPositionGroup(Sample sample, int pos){
+    private PositionGroup getPositionGroup(Sample sample, int pos){
 		return sample.getPositionGroupAt(pos);
     }
     
@@ -157,9 +149,10 @@ public class StringProcessor {
         while (!s1.isEmpty()){
             SampleSet old_s1 = s1.Clone(); 
             SampleSet s1_ = s1.Clone();
+            SampleSet s2_ = s2.Clone();
             MatchGroup d = new MatchGroup();
-            while (!s2.isEmpty()){
-                SampleSet old_s2 = s2.Clone();
+            while (!s2_.isEmpty()){
+                SampleSet old_s2 = s2_.Clone();
                 int max_score = 0, best = 0;
                 for (int i = 0; i < MatchSet.getSize(); i++){
                     Match m = MatchSet.getMatchAt(i);
@@ -170,9 +163,9 @@ public class StringProcessor {
                     }
                 }
                 s1_.clearUnMatchedWith(MatchSet.getMatchAt(best));
-                s2.clearUnMatchedWith(MatchSet.getMatchAt(best));
+                s2_.clearUnMatchedWith(MatchSet.getMatchAt(best));
                 d.addMatch(MatchSet.getMatchAt(best));
-                if (old_s2.getSize() == s2.getSize())
+                if (old_s2.getSize() == s2_.getSize())
                     return null;
             }
             s1.removeAllSamplesIn(s1_);
@@ -231,12 +224,12 @@ public class StringProcessor {
             Bool b = T.getBoolAt(i);
             for (int j = 0; j < b.getConjunctNumber(); j++){
                 if (j > 0){
-                    Tool.print(" & ");
+                    Tool.print(" || ");
                 }
                 MatchGroup d = b.getConjuctAt(j);
                 for (int k = 0; k < d.getSize(); k++){
                     if (k > 0){
-                        Tool.print(" | ");
+                        Tool.print(" && ");
                     }
                     Match m = d.getMatchAt(k);
                     Tool.print("Match(v1,");
@@ -286,7 +279,7 @@ public class StringProcessor {
         Tool.println("");
     }
     
-    public void DisplayProgram(){
+    private void DisplayProgram(){
         Tool.println("== Program ==");
         for (int i = 0; i < T.getDAGNumber(); i++){
             int number = i + 1;
@@ -346,7 +339,7 @@ public class StringProcessor {
     public void Run(){
         PreProcess();
         GenerateTraceExpressionsForEachSample();
-        //GeneratePartition();
+        GeneratePartition();
         GenerateBoolClassifier();
         EndProcess();
     }
