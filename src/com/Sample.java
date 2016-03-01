@@ -74,7 +74,6 @@ public class Sample {
     //generate position group for input string at pos
     private PositionGroup generatePositionGroupAt(int pos){
         PositionGroup pg = new PositionGroup();
-        
         if (isTokenInterruptable(pos)){
             RegexGroup rg1 = ParseLeft(pos);
             RegexGroup rg2 = ParseRight(pos);
@@ -100,8 +99,10 @@ public class Sample {
                     pg.AddPosition(new Pos(r1, r2, appear-occur_num-1));
                 }
         }
-        pg.AddPosition(new CPos(pos));
-        pg.AddPosition(new CPos(-(Input.length()-pos+1)));
+        //pg.AddPosition(new CPos(pos));
+        //pg.AddPosition(new CPos(-(Input.length()-pos+1)));
+        if (pg.getSize() == 0)
+            return null;
         return pg;
     }
     

@@ -120,8 +120,10 @@ public class StringProcessor {
                 break;
             PositionGroup pg1 = getPositionGroup(sample, pos+offset);
             PositionGroup pg2 = getPositionGroup(sample, pos+offset+target.length());
-            ExpressionSubstr es = new ExpressionSubstr(pg1, pg2);
-            eg.addExpression(es);
+            if (pg1 != null && pg2 != null){
+                ExpressionSubstr es = new ExpressionSubstr(pg1, pg2);
+                eg.addExpression(es);
+            }
             offset += (pos + 1);
             source = source.substring(pos+1, source.length());
         }
@@ -222,6 +224,10 @@ public class StringProcessor {
             int number = i + 1;
             Tool.print("Group #"+number+": ");
             Bool b = T.getBoolAt(i);
+            if (b == null){
+                Tool.print("NULL");
+                continue;
+            }
             for (int j = 0; j < b.getConjunctNumber(); j++){
                 if (j > 0){
                     Tool.print(" || ");
@@ -243,7 +249,7 @@ public class StringProcessor {
     }
     
     private void DisplayRoute(ArrayList<Edge> route){
-        if (route.size() > 0){
+        if (route.size() > 1){
             Tool.print("Concatenate(");
         }
         for (int i = 0; i < route.size(); i++){
@@ -251,7 +257,7 @@ public class StringProcessor {
                 Tool.print(" + ");
             route.get(i).getExpressionGroup().getExpressionAt(0).Print();
         }
-        if (route.size() > 0){
+        if (route.size() > 1){
             Tool.print(")");
         }   
         Tool.println("");
@@ -274,6 +280,7 @@ public class StringProcessor {
     private void TraverseDAG(DAG d){
         RouteNumber = 0;
         DFS(d, d.getStartNode(), new ArrayList<Edge>());
+        Tool.print("#");
         Tool.print("Total: ");
         Tool.print(RouteNumber);
         Tool.println("");
@@ -323,6 +330,7 @@ public class StringProcessor {
             if (b == null){
                 int number = i+1;
                 Tool.error("Failure in generate bool classifier for Partition Group "+number);
+                T.addBoolClassifier(null);
             }
             else{
                 T.addBoolClassifier(b);
