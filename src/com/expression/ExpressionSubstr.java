@@ -1,5 +1,6 @@
 package com.expression;
 
+import com.Tool;
 import com.position.PositionGroup;
 
 /*
@@ -21,11 +22,11 @@ public class ExpressionSubstr extends Expression{
         return this.pg2;
     }
     
-//    public void Print(){
-//        Tool.print("SubStr(v1, ");
-//        p1.Print();
-//        Tool.print(",");
-//        p2.Print();
-//        Tool.print(")");
-//    }
+    public void Print(){
+        Tool.print("SubStr(v1, ");
+        pg1.getPositionAt(0).Print();
+        Tool.print(",");
+        pg2.getPositionAt(0).Print();
+        Tool.print(")");
+    }
 }

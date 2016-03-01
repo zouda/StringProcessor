@@ -1,4 +1,4 @@
-# StringProcessor
+### StringProcessor
 Implementation of a string processor tool
 
 # Paper

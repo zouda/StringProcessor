@@ -74,8 +74,6 @@ public class Sample {
     //generate position group for input string at pos
     private PositionGroup generatePositionGroupAt(int pos){
         PositionGroup pg = new PositionGroup();
-        pg.AddPosition(new CPos(pos));
-        pg.AddPosition(new CPos(-(Input.length()-pos+1)));
         
         if (isTokenInterruptable(pos)){
             RegexGroup rg1 = ParseLeft(pos);
@@ -102,6 +100,8 @@ public class Sample {
                     pg.AddPosition(new Pos(r1, r2, appear-occur_num-1));
                 }
         }
+        pg.AddPosition(new CPos(pos));
+        pg.AddPosition(new CPos(-(Input.length()-pos+1)));
         return pg;
     }
     
@@ -170,10 +170,12 @@ public class Sample {
         for (int i = pos-1; i >= 0; i--){
             Regex r = MatchStringWithTokenSeq(Input, i, pos);
             if (r != null){
-                rg.addRegex(r);
-                if (i == 0){
+                if (i != 0){
+                    rg.addRegex(r);
+                } else {
                     Regex temp = r.clone();
                     temp.setToken(0, Tok.StartTok);
+                    rg.addRegex(r);
                     rg.addRegex(temp);
                 }
                 break;
@@ -188,10 +190,12 @@ public class Sample {
         for (int i = pos+1; i <= Input.length(); i++){
             Regex r = MatchStringWithTokenSeq(Input, pos, i);
             if (r != null){
-                rg.addRegex(r);
-                if (i == Input.length()){
+                if (i != Input.length()){
+                    rg.addRegex(r);
+                } else {
                     Regex temp = r.clone();
                     temp.setToken(temp.getSize()-1, Tok.EndTok);
+                    rg.addRegex(r);
                     rg.addRegex(temp);
                 }
                 break;

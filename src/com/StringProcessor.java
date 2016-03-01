@@ -19,6 +19,7 @@ public class StringProcessor {
 	public ArrayList<Sample> SampleList;
 	public MatchGroup MatchSet;
 	public DAGGroup T;
+	public int RouteNumber = 0;
 	
 	public StringProcessor(){
         T = new DAGGroup();
@@ -94,14 +95,14 @@ public class StringProcessor {
         for (int i = 0; i < s.length(); i++){
             for (int j = i + 1; j <= s.length(); j++){
                 ExpressionGroup eg = GenerateSubstring(sample, i, j);
-                ExpressionConststr ec = new ExpressionConststr(s.substring(i, j));
-                eg.addExpression(ec);
-
                 Edge e = new Edge();
                 e.setEdge(dag.getNodeAt(i), dag.getNodeAt(j));
                 e.setExpressionGroup(eg);
                 dag.addEdge(e);
                 dag.getNodeAt(i).addPath(e);
+                
+                ExpressionConststr ec = new ExpressionConststr(s.substring(i, j));
+                eg.addExpression(ec);
             }
         }
         sample.setDAG(dag);
@@ -195,7 +196,7 @@ public class StringProcessor {
         return num1*num2;
     }
     
-    private void DisplayInputContent(){
+    private void DisplayExamples(){
         Tool.println("== Examples ==");
         for (int i = 0; i < SampleList.size();i++){
             Sample sample = SampleList.get(i);
@@ -245,12 +246,59 @@ public class StringProcessor {
             }
             Tool.println("");
         }
+        Tool.println("");
+    }
+    
+    private void DisplayRoute(ArrayList<Edge> route){
+        if (route.size() > 0){
+            Tool.print("Concatenate(");
+        }
+        for (int i = 0; i < route.size(); i++){
+            if (i > 0)
+                Tool.print(" + ");
+            route.get(i).getExpressionGroup().getExpressionAt(0).Print();
+        }
+        if (route.size() > 0){
+            Tool.print(")");
+        }   
+        Tool.println("");
+    }
+    
+    private void DFS(DAG d, Node n, ArrayList<Edge> route){
+        if (n == d.getEndNode()){
+            RouteNumber++;
+            DisplayRoute(route);
+            return;
+        }
+        for (int i = 0; i < n.getPathSize(); i++){
+            Edge e = n.getPathAt(i);
+            route.add(e);
+            DFS(d, e.getTarget(), route);
+            route.remove(route.size()-1);
+        }
+    }
+    
+    private void TraverseDAG(DAG d){
+        RouteNumber = 0;
+        DFS(d, d.getStartNode(), new ArrayList<Edge>());
+        Tool.print("Total: ");
+        Tool.print(RouteNumber);
+        Tool.println("");
+    }
+    
+    public void DisplayProgram(){
+        Tool.println("== Program ==");
+        for (int i = 0; i < T.getDAGNumber(); i++){
+            int number = i + 1;
+            Tool.print("Group #"+number+":\n");
+            TraverseDAG(T.getDAGAt(i));
+        }
     }
     
     public void PreProcess(){
         Tool.startFileWriting();
         InputSamples();
-        DisplayInputContent();
+        DisplayExamples();
         GenerateAllMatch();
     }
     
@@ -291,13 +339,14 @@ public class StringProcessor {
     }
     
     public void EndProcess(){
+        DisplayProgram();
         Tool.endFileWriting();
     }
     
     public void Run(){
         PreProcess();
         GenerateTraceExpressionsForEachSample();
-        GeneratePartition();
+        //GeneratePartition();
         GenerateBoolClassifier();
         EndProcess();
     }

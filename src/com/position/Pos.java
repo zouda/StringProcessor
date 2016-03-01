@@ -1,5 +1,6 @@
 package com.position;
 
+import com.Tool;
 import com.regex.*;
 
 /*
@@ -32,17 +33,17 @@ public class Pos extends Position {
     }
     
     
-//    public void Print(){
-//        if (r1 == null || r2 == null){
-//            Tool.error("error: undefined Pos");
-//            return;
-//        }
-//        Tool.print("Pos(");
-//        r1.Print();
-//        Tool.print(",");
-//        r2.Print();
-//        Tool.print(",");
-//        Tool.print(c);
-//        Tool.print(")");
-//    }
+    public void Print(){
+        if (r1 == null || r2 == null){
+            Tool.error("error: undefined Pos");
+            return;
+        }
+        Tool.print("Pos(");
+        r1.Print();
+        Tool.print(",");
+        r2.Print();
+        Tool.print(",");
+        Tool.print(c);
+        Tool.print(")");
+    }
 }
