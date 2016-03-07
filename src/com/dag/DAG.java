@@ -175,6 +175,11 @@ public class DAG {
     
     public static DAG IntersectDAG(DAG d1, DAG d2) {
         DAG d = new DAG();
+        if (d1.getDim() == 6 && d2.getDim() == 6){
+            int stop;
+            stop = 3;
+        }
+        Tool.TimerStart();
         d.setDim(d1.getDim()+d2.getDim());
         for (int i = 0; i < d1.dim; i++){
             d.dimSize[i] = d1.dimSize[i];
@@ -186,7 +191,8 @@ public class DAG {
         }
         for (int i = 0; i < d1.getNodeNumber(); i++){
             for (int j = 0; j < d2.getNodeNumber(); j++){
-                Node n = new Node(d1.getNodeAt(i), d2.getNodeAt(j));                
+                Node n = new Node(d1.getNodeAt(i), d2.getNodeAt(j));
+                n.Isolated = true;
                 d.addNode(n);
                 if (i == 0 && j == 0){
                     d.setStartNode(n);
@@ -196,20 +202,18 @@ public class DAG {
                 }
             }
         }
+        int count = 0;
         for (int i = 0; i < d1.getNodeNumber(); i++){
             for (int j = 0; j < d2.getNodeNumber(); j++){
-                Node u = d.getNodeByNode(new Node(d1.getNodeAt(i), d2.getNodeAt(j)));
+                Node u = d.NodeList.get(i * d2.getNodeNumber() + j);
                 for (int k = 0; k < d1.getNodeAt(i).getPathSize(); k++){
                     for (int l = 0; l < d2.getNodeAt(j).getPathSize(); l++){
+                        count++;
                         Edge e1 = d1.getNodeAt(i).getPathAt(k);
                         Edge e2 = d2.getNodeAt(j).getPathAt(l);
                         Node t1 = e1.getTarget();
                         Node t2 = e2.getTarget();
-                        Node v = d.getNodeByNode(new Node(t1, t2));
-//                        if (u.getLabel()[0] == 0 && u.getLabel()[1] == 0 && 
-//                            v.getLabel()[0] == 3 && v.getLabel()[1] == 3){
-//                            i = i;
-//                        }
+                        Node v = d.NodeList.get(t1.getIndex() * d2.getNodeNumber() + t2.getIndex());
                         
                         ExpressionGroup eg = Intersect(e1.getExpressionGroup(), e2.getExpressionGroup());                        
                         if (eg != null){
@@ -217,33 +221,52 @@ public class DAG {
                             e.setExpressionGroup(eg);
                             d.addEdge(e);
                             u.addPath(e);
+                            u.Isolated = false;
+                            v.Isolated = false;
                         }
                     }
                 }
             }
         }
+        
+        int index = d.NodeList.size()-1;
+        while (true){
+            if (d.NodeList.get(index).Isolated){
+                d.NodeList.remove(index);
+            }
+            index--;
+            if (index == -1)
+                break;
+        }
+        for (int i = 0; i < d.NodeList.size(); i++){
+            d.NodeList.get(i).setIndex(i);
+        }
+        //System.out.println(count);
+        Tool.TimerEnd();
+        Tool.SumTime();
+        Global.Count_total += count;
         return d;
     }
     
-    private Node getNodeByNode(Node node) {
-        int[] label = node.getLabel();
-        int dim = node.getDim();
-        int index = label[0];
-        for (int i = 1; i < dim; i++){
-            index += index * this.dimSize[i-1] + label[i];
-        }
-        return this.getNodeAt(index);
-    }
+//    private Node getNodeByNode(Node node) {
+//        int[] label = node.getLabel();
+//        int dim = node.getDim();
+//        int index = label[0];
+//        for (int i = 1; i < dim; i++){
+//            index += index * this.dimSize[i-1] + label[i];
+//        }
+//        return this.getNodeAt(index);
+//    }
     
-    private int getNodeIndexByNode(Node node) {
-        int[] label = node.getLabel();
-        int dim = node.getDim();
-        int index = label[0];
-        for (int i = 1; i < dim; i++){
-            index += index * this.dimSize[i-1] + label[i];
-        }
-        return index;
-    }
+//    private int getNodeIndexByNode(Node node) {
+//        int[] label = node.getLabel();
+//        int dim = node.getDim();
+//        int index = label[0];
+//        for (int i = 1; i < dim; i++){
+//            index += index * this.dimSize[i-1] + label[i];
+//        }
+//        return index;
+//    }
 
     private static ExpressionGroup Intersect(ExpressionGroup eg1, ExpressionGroup eg2){
         ExpressionGroup eg = new ExpressionGroup();
@@ -342,7 +365,7 @@ public class DAG {
             for (int i = 0; i < u.getPathSize(); i++){
                 Edge e = u.getPathAt(i);
                 Node v = e.getTarget();
-                int index = this.getNodeIndexByNode(v);
+                int index = v.getIndex();
                 if (!flag[index]){
                     flag[index] = true;
                     queue[++bot] = index;

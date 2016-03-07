@@ -7,6 +7,9 @@ import java.io.*;
  */
 public class Tool {
     public static BufferedWriter bw;
+    private static long startMili;
+    private static long endMili;
+    private static long sumTime = 0;
     
     public static int Max_Int(int x, int y){
         if (x > y)
@@ -139,5 +142,22 @@ public class Tool {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    
+    public static void TimerStart(){
+        startMili = System.currentTimeMillis();
+    }
+    
+    public static void TimerEnd(){
+        endMili = System.currentTimeMillis();
+        System.out.println("总耗时为："+(endMili-startMili)+"毫秒");
+    }
+
+    public static void SumTime() {
+        sumTime  += endMili-startMili;
+    }
+    
+    public static void printTime(){
+        System.out.println("总耗时为："+(sumTime)+"毫秒");
     }
 }

@@ -11,6 +11,8 @@ public class Node {
     private double size = 0;
     private ArrayList<Edge> PathList;
     public boolean SizeCompleted = false;
+    public boolean Isolated = false;
+    private int index;
     
     public Node(){
         PathList = new ArrayList<Edge>();
@@ -69,5 +71,13 @@ public class Node {
 
     public void addPath(Edge e) {
         this.PathList.add(e);
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 }

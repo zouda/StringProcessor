@@ -85,6 +85,8 @@ public class StringProcessor {
         String s = sample.getOutput();
         for (int i = 0; i <= s.length(); i++){
             Node n = new Node(i);
+            n.Isolated = false;
+            n.setIndex(i);
             dag.addNode(n);
         }
         dag.setSample(sample);
@@ -342,6 +344,8 @@ public class StringProcessor {
     public void EndProcess(){
         DisplayProgram();
         Tool.endFileWriting();
+        System.out.println(Global.Count_total);
+        Tool.printTime();
     }
     
     public void Run(){
