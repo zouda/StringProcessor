@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * Node in DAG
  */
 public class Node {
-    private int[] label; 
+    //private int[] label; 
     private int dim;
     private double size = 0;
     private ArrayList<Edge> PathList;
@@ -20,20 +20,20 @@ public class Node {
     
     public Node(int num){
         PathList = new ArrayList<Edge>();
-        label = new int[1];
-        label[0] = num;
+//        label = new int[1];
+//        label[0] = num;
         dim = 1;
     }
     
     public Node(Node n1, Node n2){
         PathList = new ArrayList<Edge>();
-        label = new int[n1.dim+n2.dim];
-        for (int i = 0; i < n1.dim; i++){
-            label[i] = n1.label[i];
-        }
-        for (int i = n1.dim; i < n1.dim+n2.dim; i++){
-            label[i] = n2.label[i-n1.dim];
-        }
+//        label = new int[n1.dim+n2.dim];
+//        for (int i = 0; i < n1.dim; i++){
+//            label[i] = n1.label[i];
+//        }
+//        for (int i = n1.dim; i < n1.dim+n2.dim; i++){
+//            label[i] = n2.label[i-n1.dim];
+//        }
         dim = n1.dim+n2.dim; 
     }
     
@@ -53,13 +53,13 @@ public class Node {
         return this.dim;
     }
     
-    public void setLabel(int[] label){
-        this.label = label.clone();
-    }
-    
-    public int[] getLabel(){
-        return this.label;
-    }
+//    public void setLabel(int[] label){
+//        this.label = label.clone();
+//    }
+//    
+//    public int[] getLabel(){
+//        return this.label;
+//    }
     
     public void setSize(double size){
         this.size = size;

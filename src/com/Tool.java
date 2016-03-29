@@ -126,6 +126,15 @@ public class Tool {
         }
     }
     
+    public static void println(int num) {
+        System.out.println(num);
+        try {
+            bw.write(String.valueOf(num));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
     public static void startFileWriting(){
         try {
             FileWriter fw = new FileWriter(new File(Global.OUTPUT_FILE_PATH),false);
@@ -150,7 +159,7 @@ public class Tool {
     
     public static void TimerEnd(){
         endMili = System.currentTimeMillis();
-        System.out.println("总耗时为："+(endMili-startMili)+"毫秒");
+        //System.out.println("总耗时为："+(endMili-startMili)+"毫秒");
     }
 
     public static void SumTime() {

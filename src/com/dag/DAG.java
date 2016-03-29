@@ -175,10 +175,6 @@ public class DAG {
     
     public static DAG IntersectDAG(DAG d1, DAG d2) {
         DAG d = new DAG();
-        if (d1.getDim() == 6 && d2.getDim() == 6){
-            int stop;
-            stop = 3;
-        }
         Tool.TimerStart();
         d.setDim(d1.getDim()+d2.getDim());
         for (int i = 0; i < d1.dim; i++){
@@ -228,7 +224,8 @@ public class DAG {
                 }
             }
         }
-        
+        Tool.TimerEnd();
+        Tool.SumTime();
         int index = d.NodeList.size()-1;
         while (true){
             if (d.NodeList.get(index).Isolated){
@@ -242,8 +239,7 @@ public class DAG {
             d.NodeList.get(i).setIndex(i);
         }
         //System.out.println(count);
-        Tool.TimerEnd();
-        Tool.SumTime();
+        
         Global.Count_total += count;
         return d;
     }
@@ -354,6 +350,9 @@ public class DAG {
     
     //if a path from StartNode to EndNode found(FloodFill)
     public boolean isCovered(){
+        if (this.NodeList.size() == 0){
+            return false;
+        }
         boolean[] flag = new boolean[this.NodeList.size()];
         int[] queue = new int[this.NodeList.size()];
         int top = -1, bot = 0;
@@ -376,3 +375,5 @@ public class DAG {
         return flag[this.NodeList.size()-1];
     }
 }
+
+

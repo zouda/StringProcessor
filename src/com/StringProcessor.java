@@ -97,14 +97,13 @@ public class StringProcessor {
         for (int i = 0; i < s.length(); i++){
             for (int j = i + 1; j <= s.length(); j++){
                 ExpressionGroup eg = GenerateSubstring(sample, i, j);
+                ExpressionConststr ec = new ExpressionConststr(s.substring(i, j));
+                eg.addExpression(ec);
                 Edge e = new Edge();
                 e.setEdge(dag.getNodeAt(i), dag.getNodeAt(j));
                 e.setExpressionGroup(eg);
                 dag.addEdge(e);
                 dag.getNodeAt(i).addPath(e);
-                
-                ExpressionConststr ec = new ExpressionConststr(s.substring(i, j));
-                eg.addExpression(ec);
             }
         }
         sample.setDAG(dag);
@@ -136,8 +135,13 @@ public class StringProcessor {
 		return sample.getPositionGroupAt(pos);
     }
     
-    public void GenerateLoop(){
-        
+    public void GenerateLoop(Sample s){
+        /* Algorithm:
+         * 
+         * enumerate k1,k2,k3
+         * generate DAG for output[k1,k2] and output[k2,k3], say d1, d2.
+         * d = unify(d1,d2)
+         */
     }
     
     private Bool GenerateBoolExpression(int index) {
