@@ -19,7 +19,6 @@ public class StringProcessor {
 	public ArrayList<Sample> SampleList;
 	public MatchGroup MatchSet;
 	public DAGGroup T;
-	public int RouteNumber = 0;
 	
 	public StringProcessor(){
         T = new DAGGroup();
@@ -135,15 +134,47 @@ public class StringProcessor {
 		return sample.getPositionGroupAt(pos);
     }
     
-    public void GenerateLoop(Sample s){
+    public void GenerateLoop(Sample sample, DAG W){
         /* Algorithm:
          * 
          * enumerate k1,k2,k3
-         * generate DAG for output[k1,k2] and output[k2,k3], say d1, d2.
+         * generate DAG for output[k1,k2] and output[k2,k3], say d1, d2
          * d = unify(d1,d2)
+         * construct s = d(input)
+         * if s matches output[k1,k4], add Loop(d) to output[k1,k4]
          */
+        String output = sample.getOutput();
+        for (int k1 = 0; k1 < output.length(); k1++){
+            for (int k2 = k1 + 1; k2 < output.length(); k2++){
+                for (int k3 = k2 + 1; k3 < output.length(); k3++){
+                    DAG d1 = GenerateDAG(new Sample(sample.getInput(), output.substring(k1, k2)));
+                    DAG d2 = GenerateDAG(new Sample(sample.getInput(), output.substring(k2, k3)));
+                    
+                    DAG d = DAG.Unify(d1, d2);
+                    if (d == null)
+                        continue;
+                    
+                    String temp = ConstructLoopOutput(sample.getInput(), d);
+                    if (temp == null)
+                        continue;
+                    
+                    ExpressionLoop el = new ExpressionLoop(d);
+                    for (int k4 = k1 + 1; k4 < output.length(); k4 ++){
+                        if (output.substring(k1, k4).equals(temp)){
+                            Edge e = W.getEdgeAt(k1 * output.length() + k4);
+                            e.getExpressionGroup().addExpression(el);
+                        }
+                    }
+                }
+            }
+        }
     }
     
+    private String ConstructLoopOutput(String input, DAG d) {
+        RouteGroup rg = TraverseDAG(d);
+        return null;
+    }
+
     private Bool GenerateBoolExpression(int index) {
         Bool b = new Bool();
         SampleSet s1 = new SampleSet();
@@ -195,6 +226,93 @@ public class StringProcessor {
                 num2++;
         }
         return num1*num2;
+    }
+    
+    private void DFS(DAG d, Node n, Route route, RouteGroup rg){
+        if (n == d.getEndNode()){
+            Route r = route.clone();
+            rg.add(r);
+            return;
+        }
+        for (int i = 0; i < n.getPathSize(); i++){
+            Edge e = n.getPathAt(i);
+            route.add(e);
+            DFS(d, e.getTarget(), route, rg);
+            route.remove(route.size()-1);
+        }
+    }
+    
+    private RouteGroup TraverseDAG(DAG d){
+        RouteGroup rg = new RouteGroup();
+        DFS(d, d.getStartNode(), new Route(), rg);
+        return rg;
+    }
+    
+    private void DisplayProgram(){
+        Tool.println("== Program ==");
+        for (int i = 0; i < T.getDAGNumber(); i++){
+            int number = i + 1;
+            Tool.print("Group #"+number+":\n");
+            RouteGroup rg = TraverseDAG(T.getDAGAt(i));
+            for (int j = 0; j < rg.size(); j++){
+                rg.get(j).Print();
+            }
+            Tool.print("#");
+            Tool.print("Total: ");
+            Tool.print(rg.getNumber());
+            Tool.println("");
+        }
+    }
+    
+    public void PreProcess(){
+        Tool.startFileWriting();
+        InputSamples();
+        DisplayExamples();
+        GenerateAllMatch();
+    }
+    
+    public void GenerateTraceExpressionsForEachSample(){
+        for (int i = 0; i < SampleList.size(); i++){
+            Sample sample = SampleList.get(i);
+            sample.generatePositionGroups();
+            DAG dag = GenerateDAG(sample);
+            //GenerateLoop(sample, dag);
+            T.addDAG(dag);
+        }
+    }
+    
+    public void GeneratePartition(){
+        while (T.ExistCompPair()){
+            DAGPair dp = T.FindLargestCSPair();
+            DAG d1 = T.getDAGAt(dp.getIndex1());
+            DAG d2 = T.getDAGAt(dp.getIndex2());
+            DAG newDAG = DAG.IntersectDAG(d1, d2, false);
+            T.removeDAGAt(dp.getIndex2());
+            T.removeDAGAt(dp.getIndex1());
+            T.addDAG(newDAG);
+        }
+        DisplayPartition();
+    }
+    
+    public void GenerateBoolClassifier(){
+        for (int i = 0; i < T.getDAGNumber(); i++){
+            Bool b = GenerateBoolExpression(i);
+            if (b == null){
+                int number = i+1;
+                Tool.error("Failure in generate bool classifier for Partition Group "+number);
+                T.addBoolClassifier(null);
+            }
+            else{
+                T.addBoolClassifier(b);
+            }
+        }
+        DisplayBoolClassifiers();
+    }
+    
+    public void EndProcess(){
+        DisplayProgram();
+        Tool.endFileWriting();
+        Tool.printTime();
     }
     
     private void DisplayExamples(){
@@ -252,104 +370,6 @@ public class StringProcessor {
             Tool.println("");
         }
         Tool.println("");
-    }
-    
-    private void DisplayRoute(ArrayList<Edge> route){
-        if (route.size() > 1){
-            Tool.print("Concatenate(");
-        }
-        for (int i = 0; i < route.size(); i++){
-            if (i > 0)
-                Tool.print(" + ");
-            route.get(i).getExpressionGroup().getExpressionAt(0).Print();
-        }
-        if (route.size() > 1){
-            Tool.print(")");
-        }   
-        Tool.println("");
-    }
-    
-    private void DFS(DAG d, Node n, ArrayList<Edge> route){
-        if (n == d.getEndNode()){
-            RouteNumber++;
-            DisplayRoute(route);
-            return;
-        }
-        for (int i = 0; i < n.getPathSize(); i++){
-            Edge e = n.getPathAt(i);
-            route.add(e);
-            DFS(d, e.getTarget(), route);
-            route.remove(route.size()-1);
-        }
-    }
-    
-    private void TraverseDAG(DAG d){
-        RouteNumber = 0;
-        DFS(d, d.getStartNode(), new ArrayList<Edge>());
-        Tool.print("#");
-        Tool.print("Total: ");
-        Tool.print(RouteNumber);
-        Tool.println("");
-    }
-    
-    private void DisplayProgram(){
-        Tool.println("== Program ==");
-        for (int i = 0; i < T.getDAGNumber(); i++){
-            int number = i + 1;
-            Tool.print("Group #"+number+":\n");
-            TraverseDAG(T.getDAGAt(i));
-        }
-    }
-    
-    public void PreProcess(){
-        Tool.startFileWriting();
-        InputSamples();
-        DisplayExamples();
-        GenerateAllMatch();
-    }
-    
-    public void GenerateTraceExpressionsForEachSample(){
-        for (int i = 0; i < SampleList.size(); i++){
-            Sample sample = SampleList.get(i);
-            sample.generatePositionGroups();
-            DAG dag = GenerateDAG(sample);
-            T.addDAG(dag);
-        }
-    }
-    
-    public void GeneratePartition(){
-        while (T.ExistCompPair()){
-            DAGPair dp = T.FindLargestCSPair();
-            DAG d1 = T.getDAGAt(dp.getIndex1());
-            DAG d2 = T.getDAGAt(dp.getIndex2());
-            DAG newDAG = DAG.IntersectDAG(d1, d2);
-            T.removeDAGAt(dp.getIndex2());
-            T.removeDAGAt(dp.getIndex1());
-            T.addDAG(newDAG);
-        }
-        DisplayPartition();
-    }
-    
-    public void GenerateBoolClassifier(){
-        for (int i = 0; i < T.getDAGNumber(); i++){
-            Bool b = GenerateBoolExpression(i);
-            if (b == null){
-                int number = i+1;
-                Tool.error("Failure in generate bool classifier for Partition Group "+number);
-                T.addBoolClassifier(null);
-            }
-            else{
-                T.addBoolClassifier(b);
-            }
-        }
-        DisplayBoolClassifiers();
-    }
-    
-    public void EndProcess(){
-        DisplayProgram();
-        Tool.endFileWriting();
-        System.out.println(Global.Count_total);
-        Tool.printTime();
     }
     
     public void Run(){

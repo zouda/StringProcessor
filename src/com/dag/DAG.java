@@ -104,7 +104,7 @@ public class DAG {
     public Edge getEdgeAt(int pos){
         return this.EdgeList.get(pos);
     }
-
+    
     public int getEdgeNumber() {
         return this.EdgeList.size();
     }
@@ -166,14 +166,14 @@ public class DAG {
     }
     
     public static boolean Comp(DAG d1, DAG d2){
-        DAG d = IntersectDAG(d1, d2);
+        DAG d = IntersectDAG(d1, d2, false);
         if (d.isCovered())
             return true;
         else
             return false;
     }
     
-    public static DAG IntersectDAG(DAG d1, DAG d2) {
+    public static DAG IntersectDAG(DAG d1, DAG d2, boolean isLoop) {
         DAG d = new DAG();
         Tool.TimerStart();
         d.setDim(d1.getDim()+d2.getDim());
@@ -211,7 +211,7 @@ public class DAG {
                         Node t2 = e2.getTarget();
                         Node v = d.NodeList.get(t1.getIndex() * d2.getNodeNumber() + t2.getIndex());
                         
-                        ExpressionGroup eg = Intersect(e1.getExpressionGroup(), e2.getExpressionGroup());                        
+                        ExpressionGroup eg = Intersect(e1.getExpressionGroup(), e2.getExpressionGroup(), isLoop);                        
                         if (eg != null){
                             Edge e = new Edge(u,v);
                             e.setExpressionGroup(eg);
@@ -244,34 +244,18 @@ public class DAG {
         return d;
     }
     
-//    private Node getNodeByNode(Node node) {
-//        int[] label = node.getLabel();
-//        int dim = node.getDim();
-//        int index = label[0];
-//        for (int i = 1; i < dim; i++){
-//            index += index * this.dimSize[i-1] + label[i];
-//        }
-//        return this.getNodeAt(index);
-//    }
-    
-//    private int getNodeIndexByNode(Node node) {
-//        int[] label = node.getLabel();
-//        int dim = node.getDim();
-//        int index = label[0];
-//        for (int i = 1; i < dim; i++){
-//            index += index * this.dimSize[i-1] + label[i];
-//        }
-//        return index;
-//    }
+    public static DAG Unify(DAG d1, DAG d2){
+        return IntersectDAG(d1, d2, true);
+    }
 
-    private static ExpressionGroup Intersect(ExpressionGroup eg1, ExpressionGroup eg2){
+    private static ExpressionGroup Intersect(ExpressionGroup eg1, ExpressionGroup eg2, boolean isLoop){
         ExpressionGroup eg = new ExpressionGroup();
         for (int i = 0; i < eg1.getSize(); i++){
             for (int j = 0; j < eg2.getSize(); j++){
                 Expression e1 = eg1.getExpressionAt(i);
                 Expression e2 = eg2.getExpressionAt(j);
                 if ((e1 instanceof ExpressionSubstr) && (e2 instanceof ExpressionSubstr)){
-                    ExpressionSubstr e = Intersect((ExpressionSubstr)e1, (ExpressionSubstr)e2);
+                    ExpressionSubstr e = Intersect((ExpressionSubstr)e1, (ExpressionSubstr)e2, isLoop);
                     if (e != null){
                         eg.addExpression(e);
                     }
@@ -298,15 +282,15 @@ public class DAG {
             return null;
     }
     
-    private static ExpressionSubstr Intersect(ExpressionSubstr e1, ExpressionSubstr e2) {
-        PositionGroup pg1 = Intersect(e1.getPositionGroup1(), e2.getPositionGroup1());
-        PositionGroup pg2 = Intersect(e1.getPositionGroup2(), e2.getPositionGroup2());
+    private static ExpressionSubstr Intersect(ExpressionSubstr e1, ExpressionSubstr e2, boolean isLoop) {
+        PositionGroup pg1 = Intersect(e1.getPositionGroup1(), e2.getPositionGroup1(), isLoop);
+        PositionGroup pg2 = Intersect(e1.getPositionGroup2(), e2.getPositionGroup2(), isLoop);
         if (pg1 != null && pg2 != null)
             return (new ExpressionSubstr(pg1, pg2));
         return null;
     }
     
-    private static PositionGroup Intersect(PositionGroup pg1, PositionGroup pg2) {
+    private static PositionGroup Intersect(PositionGroup pg1, PositionGroup pg2, boolean isLoop) {
         PositionGroup pg = new PositionGroup();
         for (int i = 0; i < pg1.getSize(); i++){
             for (int j = 0; j < pg2.getSize(); j++){
@@ -319,7 +303,7 @@ public class DAG {
                     }
                 } else
                 if ((p1 instanceof Pos) && (p2 instanceof Pos)){
-                    Pos p = Intersect((Pos)p1, (Pos)p2);
+                    Pos p = Intersect((Pos)p1, (Pos)p2, isLoop);
                     if (p != null){
                         pg.AddPosition(p);
                     }
@@ -338,7 +322,15 @@ public class DAG {
             return null;
     }
     
-    private static Pos Intersect(Pos p1, Pos p2) {
+    private static Pos Intersect(Pos p1, Pos p2, boolean isLoop) {
+        if (isLoop){
+            if (p1.getRegex1().equals(p2.getRegex1()) 
+                && p1.getRegex2().equals(p2.getRegex2())){
+                    return p1;
+                } else {
+                    return null;
+                }
+        }
         if (p1.getRegex1().equals(p2.getRegex1()) 
             && p1.getRegex2().equals(p2.getRegex2()) 
             && (p1.getC() == p2.getC())){

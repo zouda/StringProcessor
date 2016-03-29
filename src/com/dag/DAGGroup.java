@@ -35,7 +35,7 @@ public class DAGGroup {
                 if (c1 != c2){
                     continue;
                 }
-                DAG d = DAG.IntersectDAG(d1, d2);
+                DAG d = DAG.IntersectDAG(d1, d2, false);
                 boolean c3 = DAG.Comp(DAGList.get(k), d);
                 if (c1 != c3){
                     continue;
@@ -49,7 +49,7 @@ public class DAGGroup {
     private double CS2(int i, int j){
         DAG d1 = DAGList.get(i);
         DAG d2 = DAGList.get(j);
-        DAG d = DAG.IntersectDAG(d1, d2);
+        DAG d = DAG.IntersectDAG(d1, d2, false);
         double size = Tool.Max_Double(d1.getSize(), d2.getSize());
         double score = d.getSize()/size;
         return score;
