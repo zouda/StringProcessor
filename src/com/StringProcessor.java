@@ -80,6 +80,7 @@ public class StringProcessor {
     }
 	
     private DAG GenerateDAG(Sample sample){
+        sample.generatePositionGroups();
         DAG dag = new DAG();
         String s = sample.getOutput();
         for (int i = 0; i <= s.length(); i++){
@@ -134,7 +135,7 @@ public class StringProcessor {
 		return sample.getPositionGroupAt(pos);
     }
     
-    public void GenerateLoop(Sample sample, DAG W){
+    public void GenerateLoop(Sample sample, DAG dag){
         /* Algorithm:
          * 
          * enumerate k1,k2,k3
@@ -154,14 +155,15 @@ public class StringProcessor {
                     if (d == null)
                         continue;
                     
-                    String temp = ConstructLoopOutput(sample.getInput(), d);
+                    String temp = ConstructLoopOutput(sample, d);
                     if (temp == null)
                         continue;
                     
                     ExpressionLoop el = new ExpressionLoop(d);
-                    for (int k4 = k1 + 1; k4 < output.length(); k4 ++){
+                    for (int k4 = k1 + 1; k4 <= output.length(); k4 ++){
                         if (output.substring(k1, k4).equals(temp)){
-                            Edge e = W.getEdgeAt(k1 * output.length() + k4);
+                            //get edge by index (k1 * length + k4)
+                            Edge e = dag.getEdgeAt(k1, k4, sample.getOutput().length()); 
                             e.getExpressionGroup().addExpression(el);
                         }
                     }
@@ -170,9 +172,74 @@ public class StringProcessor {
         }
     }
     
-    private String ConstructLoopOutput(String input, DAG d) {
-        RouteGroup rg = TraverseDAG(d);
-        return null;
+    private String ConstructLoopOutput(Sample sample, DAG d) {
+        RouteGroup rg = DAG.TraverseDAG(d);
+        if (rg == null)
+            return null;
+        Route route = rg.get(0);
+        /*
+         * Algorithm:
+         * 
+         * enumerate every edge in route
+         * for each edge, pick an expression exp
+         * if exp is an expressionSubstr, get the first p1, p2
+         * if exp is an expressionConstr, add exp to result
+         */
+        String result = "";
+        int limit = 0;
+        while (true){
+            String sub_result = "";
+            boolean success = true;
+            for (int i = 0; i < route.size(); i++){
+                Edge e = route.get(i);
+                ExpressionGroup eg = e.getExpressionGroup();
+                Expression exp = eg.getExpressionAt(0);
+                if (exp instanceof ExpressionSubstr){
+                    ExpressionSubstr exps = (ExpressionSubstr)exp;
+                    Position p1 = exps.getPositionGroup1().getPositionAt(0);
+                    Position p2 = exps.getPositionGroup2().getPositionAt(0);
+                    int pos1 = getPositionInString(sample, p1, limit);
+                    if (pos1 == -1){
+                        success = false;
+                        break;
+                    }
+                    int pos2 = getPositionInString(sample, p2, pos1+1);
+                    if (pos2 == -1){
+                        success = false;
+                        break;
+                    }
+                    if (pos1 < pos2){
+                        sub_result += sample.getInput().substring(pos1, pos2);
+                        limit = pos2;
+                    } else{
+                        success = false;
+                        break;
+                    }
+                } else if (exp instanceof ExpressionConststr){
+                    ExpressionConststr expc = (ExpressionConststr)exp;
+                    result += expc.getConstStr();
+                }
+            }
+            if (!success)
+                break;
+            result += sub_result;
+        }
+        if (result == "")
+            return null;
+        return result;
+    }
+
+    //return the real position that the parameter "position" define in input string
+    private int getPositionInString(Sample sample, Position position, int limit) {
+        for (int i = limit; i < sample.getInput().length()+1; i++){
+            PositionGroup pg = sample.getPositionGroupAt(i);
+            if (pg == null)
+                continue;
+            if (pg.contain(position)){
+                return i;
+            }
+        }
+        return -1;
     }
 
     private Bool GenerateBoolExpression(int index) {
@@ -228,39 +295,12 @@ public class StringProcessor {
         return num1*num2;
     }
     
-    private void DFS(DAG d, Node n, Route route, RouteGroup rg){
-        if (n == d.getEndNode()){
-            Route r = route.clone();
-            rg.add(r);
-            return;
-        }
-        for (int i = 0; i < n.getPathSize(); i++){
-            Edge e = n.getPathAt(i);
-            route.add(e);
-            DFS(d, e.getTarget(), route, rg);
-            route.remove(route.size()-1);
-        }
-    }
-    
-    private RouteGroup TraverseDAG(DAG d){
-        RouteGroup rg = new RouteGroup();
-        DFS(d, d.getStartNode(), new Route(), rg);
-        return rg;
-    }
-    
     private void DisplayProgram(){
         Tool.println("== Program ==");
         for (int i = 0; i < T.getDAGNumber(); i++){
             int number = i + 1;
             Tool.print("Group #"+number+":\n");
-            RouteGroup rg = TraverseDAG(T.getDAGAt(i));
-            for (int j = 0; j < rg.size(); j++){
-                rg.get(j).Print();
-            }
-            Tool.print("#");
-            Tool.print("Total: ");
-            Tool.print(rg.getNumber());
-            Tool.println("");
+            T.getDAGAt(i).Print(true, false);
         }
     }
     
@@ -274,9 +314,8 @@ public class StringProcessor {
     public void GenerateTraceExpressionsForEachSample(){
         for (int i = 0; i < SampleList.size(); i++){
             Sample sample = SampleList.get(i);
-            sample.generatePositionGroups();
             DAG dag = GenerateDAG(sample);
-            //GenerateLoop(sample, dag);
+            GenerateLoop(sample, dag);
             T.addDAG(dag);
         }
     }

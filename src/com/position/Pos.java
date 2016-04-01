@@ -46,4 +46,10 @@ public class Pos extends Position {
         Tool.print(c);
         Tool.print(")");
     }
+    
+    public boolean equals(Pos p){
+        if ((this.r1.equals(p.r1)) && (this.r2.equals(p.r2)))
+            return true;
+        return false;
+    }
 }

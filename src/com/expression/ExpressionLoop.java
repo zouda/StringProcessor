@@ -1,5 +1,6 @@
 package com.expression;
 
+import com.Tool;
 import com.dag.DAG;
 
 /*
@@ -14,5 +15,12 @@ public class ExpressionLoop extends Expression {
     
     public DAG getDAG(){
         return this.d;
+    }
+    
+    @Override
+    public void Print(){
+        Tool.print("Loop(");
+        d.Print(false, true);
+        Tool.print(")");
     }
 }

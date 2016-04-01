@@ -58,7 +58,6 @@ public class Route {
         }
         if (this.size() > 1){
             Tool.print(")");
-        }   
-        Tool.println("");
+        }
     }
 }

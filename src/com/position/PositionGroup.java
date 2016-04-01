@@ -23,4 +23,13 @@ public class PositionGroup {
     public Position getPositionAt(int pos){
         return PositionList.get(pos);
     }
+
+    public boolean contain(Position position) {
+        for (int i = 0; i < PositionList.size(); i++){
+            if (PositionList.get(i).equals(position)){
+                return true;
+            }
+        }
+        return false;
+    }
 }
